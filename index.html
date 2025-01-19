@@ -41,12 +41,15 @@
             transform: translateY(20px);
             animation: fadeInUp 0.6s ease-in-out forwards;
         }
+
         .card:nth-child(2) {
             animation-delay: 0.2s;
         }
+
         .card:nth-child(3) {
             animation-delay: 0.4s;
         }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -61,6 +64,7 @@
         .input-group {
             margin: 10px 0;
         }
+
         .input-group input {
             padding: 10px;
             font-size: 16px;
@@ -102,17 +106,28 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
-            margin: 20px;
+            margin: 10px 0;
             cursor: pointer;
             border: none;
             background: linear-gradient(90deg, #6200ea, #3700b3);
             color: white;
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
+            width: 100%;
+            max-width: 200px;
         }
 
         button:hover {
             background: linear-gradient(90deg, #3700b3, #6200ea);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
         }
 
         #shift-info {
@@ -165,6 +180,7 @@
         <div class="progress-bar">
             <div class="progress-fill" id="progress-line1">0%</div>
         </div>
+        <button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
     </div>
 
     <div class="card">
@@ -179,6 +195,7 @@
         <div class="progress-bar">
             <div class="progress-fill" id="progress-line2">0%</div>
         </div>
+        <button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
     </div>
 
     <div class="card">
@@ -193,11 +210,13 @@
         <div class="progress-bar">
             <div class="progress-fill" id="progress-line3">0%</div>
         </div>
+        <button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
     </div>
 
-    <button onclick="checkPerformance()">Check Performance</button>
+    <button id="check-all" onclick="checkAllPerformance()">Check All</button>
 
     <script>
+        // Update the shift and progress bar
         function getCurrentShift() {
             const now = new Date();
             const hours = now.getHours();
@@ -222,47 +241,56 @@
             }
             end.setHours(shift.end % 24, 0, 0, 0);
 
-            const progress = ((now - start) / (end - start)) * 100;
+            const shiftDuration = end - start;
+            const progress = ((now - start) / shiftDuration) * 100;
             const progressBar = document.getElementById('shift-progress-fill');
             progressBar.style.width = `${Math.min(progress, 100)}%`;
             progressBar.textContent = `${Math.round(progress)}%`;
         }
 
-        function checkPerformance() {
-            const targets = [
-                document.getElementById('target-line1').value,
-                document.getElementById('target-line2').value,
-                document.getElementById('target-line3').value
-            ].map(Number);
+        function checkLinePerformance(lineNumber) {
+            const target = document.getElementById(`target-line${lineNumber}`).value;
+            const current = document.getElementById(`current-line${lineNumber}`).value;
 
-            const currents = [
-                document.getElementById('current-line1').value,
-                document.getElementById('current-line2').value,
-                document.getElementById('current-line3').value
-            ].map(Number);
+            if (!target || !current) return;
 
-            targets.forEach((target, index) => {
-                const halfDayTarget = target * 0.5;
-                const current = currents[index];
-                const progress = (current / halfDayTarget) * 100;
-                const result = document.getElementById(`result-line${index + 1}`);
-                const progressBar = document.getElementById(`progress-line${index + 1}`);
-                
-                progressBar.style.width = `${Math.min(progress, 100)}%`;
-                progressBar.textContent = `${Math.round(progress)}%`;
+            const halfDayTarget = target * 0.5;
+            const progress = (current / halfDayTarget) * 100;
+            const result = document.getElementById(`result-line${lineNumber}`);
+            const progressBar = document.getElementById(`progress-line${lineNumber}`);
+            
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
 
-                if (current >= halfDayTarget * 0.9 && current <= halfDayTarget * 1.1) {
-                    result.textContent = "Doing Good";
-                    progressBar.style.background = "linear-gradient(90deg, #03dac6, #018786)";
-                } else {
-                    result.textContent = "Needs Improvement";
-                    progressBar.style.background = "linear-gradient(90deg, #b00020, #f50057)";
-                }
-            });
+            if (current >= halfDayTarget * 0.9) {
+                result.textContent = "Doing good!";
+                result.style.color = "green";
+            } else {
+                result.textContent = "Needs improvement!";
+                result.style.color = "red";
+            }
         }
 
-        document.getElementById('current-shift').textContent = getCurrentShift().shift;
+        function checkAllPerformance() {
+            checkLinePerformance(1);
+            checkLinePerformance(2);
+            checkLinePerformance(3);
+        }
+
+        // Enable check buttons when both target and current output are entered
+        document.querySelectorAll('.input-group input').forEach(input => {
+            input.addEventListener('input', function() {
+                const lineNumber = this.id.split('-')[2];
+                const target = document.getElementById(`target-line${lineNumber}`).value;
+                const current = document.getElementById(`current-line${lineNumber}`).value;
+                const checkButton = document.getElementById(`check-line${lineNumber}`);
+                checkButton.disabled = !target || !current;
+            });
+        });
+
+        // Update shift progress immediately
         updateShiftProgress();
+        setInterval(updateShiftProgress, 60000);
     </script>
 </body>
 </html>
