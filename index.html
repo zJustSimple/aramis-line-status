@@ -11,11 +11,21 @@
             margin: 0;
             padding: 20px;
             background: linear-gradient(135deg, #1e1e1e, #121212);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
             color: #ffffff;
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: auto;
         }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .card {
             flex: 1;
             background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
@@ -43,9 +53,11 @@
                 transform: translateY(0);
             }
         }
+
         h2, p {
             margin: 0;
         }
+
         .input-group {
             margin: 10px 0;
         }
@@ -57,19 +69,25 @@
             border-radius: 5px;
             background-color: #2c2c2c;
             color: #ffffff;
+            width: 100%;
+            max-width: 300px;
         }
+
         .result {
             font-weight: bold;
             margin: 10px 0;
         }
+
         .progress-bar {
             width: 100%;
+            max-width: 300px;
             height: 20px;
             background-color: #333;
             border-radius: 10px;
             overflow: hidden;
             margin-top: 10px;
         }
+
         .progress-fill {
             height: 100%;
             text-align: right;
@@ -80,6 +98,7 @@
             background: linear-gradient(90deg, #6200ea, #3700b3);
             transition: width 0.3s ease-in-out;
         }
+
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -91,21 +110,28 @@
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
         }
+
         button:hover {
             background: linear-gradient(90deg, #3700b3, #6200ea);
         }
+
         #shift-info {
             text-align: center;
             margin-bottom: 20px;
         }
+
         #shift-progress-bar {
             width: 100%;
+            max-width: 300px;
             height: 20px;
             background-color: #333;
             border-radius: 10px;
             overflow: hidden;
             margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
         }
+
         #shift-progress-fill {
             height: 100%;
             text-align: right;
@@ -192,7 +218,6 @@
 
             let end = new Date(start);
             if (shift.end <= shift.start) {
-                // Handle shift that crosses midnight
                 end.setDate(end.getDate() + 1);
             }
             end.setHours(shift.end % 24, 0, 0, 0);
