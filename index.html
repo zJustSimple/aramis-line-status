@@ -216,36 +216,50 @@
     <button id="check-all" onclick="checkAllPerformance()">Check All</button>
 
     <script>
-        // Update the shift and progress bar
         function getCurrentShift() {
             const now = new Date();
             const hours = now.getHours();
+            let shift = "";
             if (hours >= 6 && hours < 14) {
-                return { shift: "Morning Shift", start: 6, end: 14 };
+                shift = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
-                return { shift: "Afternoon Shift", start: 14, end: 22 };
+                shift = "Afternoon Shift";
             } else {
-                return { shift: "Night Shift", start: 22, end: 6 };
+                shift = "Night Shift";
             }
+            return shift;
         }
 
         function updateShiftProgress() {
             const now = new Date();
-            const shift = getCurrentShift();
-            let start = new Date();
-            start.setHours(shift.start, 0, 0, 0);
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const shiftDuration = 8 * 60; // 8 hours in minutes
 
-            let end = new Date(start);
-            if (shift.end <= shift.start) {
-                end.setDate(end.getDate() + 1);
+            let shiftStartTime = 0;
+            let shiftEndTime = 0;
+            let shiftName = "";
+
+            if (hours >= 6 && hours < 14) {
+                shiftStartTime = 6 * 60;
+                shiftEndTime = 14 * 60;
+                shiftName = "Morning Shift";
+            } else if (hours >= 14 && hours < 22) {
+                shiftStartTime = 14 * 60;
+                shiftEndTime = 22 * 60;
+                shiftName = "Afternoon Shift";
+            } else {
+                shiftStartTime = 22 * 60;
+                shiftEndTime = (24 + 6) * 60; // Wrap around midnight for night shift
+                shiftName = "Night Shift";
             }
-            end.setHours(shift.end % 24, 0, 0, 0);
 
-            const shiftDuration = end - start;
-            const progress = ((now - start) / shiftDuration) * 100;
-            const progressBar = document.getElementById('shift-progress-fill');
-            progressBar.style.width = `${Math.min(progress, 100)}%`;
-            progressBar.textContent = `${Math.round(progress)}%`;
+            const timeElapsed = (hours * 60 + minutes) - shiftStartTime;
+            const shiftProgress = Math.min((timeElapsed / shiftDuration) * 100, 100);
+
+            document.getElementById('current-shift').textContent = shiftName;
+            document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
+            document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
         }
 
         function checkLinePerformance(lineNumber) {
@@ -290,7 +304,7 @@
 
         // Update shift progress immediately
         updateShiftProgress();
-        setInterval(updateShiftProgress, 60000);
+        setInterval(updateShiftProgress, 60000); // Update every minute
     </script>
 </body>
 </html>
