@@ -234,29 +234,49 @@
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
-            const shiftDuration = 8 * 60; // 8 hours in minutes
+            const totalMinutes = hours * 60 + minutes; // Total minutes since midnight
 
             let shiftStartTime = 0;
             let shiftEndTime = 0;
             let shiftName = "";
 
+            const shiftDuration = 8 * 60; // 8 hours in minutes
+
             if (hours >= 6 && hours < 14) {
+                // Morning shift: 6:00 AM - 2:00 PM
                 shiftStartTime = 6 * 60;
                 shiftEndTime = 14 * 60;
                 shiftName = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
+                // Afternoon shift: 2:00 PM - 10:00 PM
                 shiftStartTime = 14 * 60;
                 shiftEndTime = 22 * 60;
                 shiftName = "Afternoon Shift";
             } else {
-                shiftStartTime = 22 * 60;
-                shiftEndTime = (24 + 6) * 60; // Wrap around midnight for night shift
+                // Night shift: 10:00 PM - 6:00 AM (next day)
+                if (hours >= 22) {
+                    shiftStartTime = 22 * 60;
+                    shiftEndTime = (24 + 6) * 60; // 6:00 AM of next day
+                } else {
+                    shiftStartTime = (24 + 6) * 60; // 6:00 AM of next day
+                    shiftEndTime = 6 * 60;
+                }
                 shiftName = "Night Shift";
             }
 
-            const timeElapsed = (hours * 60 + minutes) - shiftStartTime;
+            // If current time is before shift start time or after shift end time, reset progress
+            if (totalMinutes < shiftStartTime || totalMinutes >= shiftEndTime) {
+                document.getElementById('current-shift').textContent = "Shift ended or not started";
+                document.getElementById('shift-progress-fill').style.width = "0%";
+                document.getElementById('shift-progress-fill').textContent = "0%";
+                return;
+            }
+
+            // Calculate progress
+            const timeElapsed = totalMinutes - shiftStartTime;
             const shiftProgress = Math.min((timeElapsed / shiftDuration) * 100, 100);
 
+            // Update shift information on page
             document.getElementById('current-shift').textContent = shiftName;
             document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
