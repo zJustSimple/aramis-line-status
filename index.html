@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Line Performance Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .line {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+        }
+        .line:nth-child(odd) {
+            background-color: #f5f5f5;
+        }
+        h2 {
+            margin: 0;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .result {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            text-align: right;
+            line-height: 20px;
+            padding-right: 5px;
+            color: white;
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #6200ea;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="line">
+        <h2>Line 1</h2>
+        <div class="input-group">
+            <label>Target Per Day: <input type="number" id="target-line1" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+            <label>Current Output: <input type="number" id="current-line1" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line1"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-line1">0%</div>
+        </div>
+    </div>
+
+    <div class="line">
+        <h2>Line 2</h2>
+        <div class="input-group">
+            <label>Target Per Day: <input type="number" id="target-line2" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+            <label>Current Output: <input type="number" id="current-line2" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line2"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-line2">0%</div>
+        </div>
+    </div>
+
+    <div class="line">
+        <h2>Line 3</h2>
+        <div class="input-group">
+            <label>Target Per Day: <input type="number" id="target-line3" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+            <label>Current Output: <input type="number" id="current-line3" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line3"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-line3">0%</div>
+        </div>
+    </div>
+
+    <button onclick="checkPerformance()">Check Performance</button>
+
+    <script>
+        function checkPerformance() {
+            const targets = [
+                document.getElementById('target-line1').value,
+                document.getElementById('target-line2').value,
+                document.getElementById('target-line3').value
+            ].map(Number);
+
+            const currents = [
+                document.getElementById('current-line1').value,
+                document.getElementById('current-line2').value,
+                document.getElementById('current-line3').value
+            ].map(Number);
+
+            targets.forEach((target, index) => {
+                const halfDayTarget = target * 0.5;
+                const current = currents[index];
+                const progress = (current / halfDayTarget) * 100;
+                const result = document.getElementById(`result-line${index + 1}`);
+                const progressBar = document.getElementById(`progress-line${index + 1}`);
+                
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+                progressBar.textContent = `${Math.round(progress)}%`;
+
+                if (current >= halfDayTarget * 0.9 && current <= halfDayTarget * 1.1) {
+                    result.textContent = "Doing Good";
+                    progressBar.style.backgroundColor = "green";
+                } else {
+                    result.textContent = "Needs Improvement";
+                    progressBar.style.backgroundColor = "red";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
