@@ -10,7 +10,7 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #121212;
+            background: linear-gradient(135deg, #1e1e1e, #121212);
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -18,7 +18,7 @@
         }
         .card {
             flex: 1;
-            background-color: #1e1e1e;
+            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -27,6 +27,21 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-in-out forwards;
+        }
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         h2, p {
             margin: 0;
@@ -62,6 +77,8 @@
             padding-right: 5px;
             color: white;
             border-radius: 10px;
+            background: linear-gradient(90deg, #6200ea, #3700b3);
+            transition: width 0.3s ease-in-out;
         }
         button {
             padding: 10px 20px;
@@ -69,12 +86,13 @@
             margin: 20px;
             cursor: pointer;
             border: none;
-            background-color: #6200ea;
+            background: linear-gradient(90deg, #6200ea, #3700b3);
             color: white;
             border-radius: 5px;
+            transition: background 0.3s ease-in-out;
         }
         button:hover {
-            background-color: #3700b3;
+            background: linear-gradient(90deg, #3700b3, #6200ea);
         }
         #shift-info {
             text-align: center;
@@ -95,6 +113,8 @@
             padding-right: 5px;
             color: white;
             border-radius: 10px;
+            background: linear-gradient(90deg, #03dac6, #018786);
+            transition: width 0.3s ease-in-out;
         }
     </style>
 </head>
@@ -108,7 +128,7 @@
     </div>
 
     <div class="card">
-        <h2>Line 1</h2>
+        <h2>Chslong Line</h2>
         <div class="input-group">
             <label>Target Per Day: <input type="number" id="target-line1" placeholder="Enter target"></label>
         </div>
@@ -122,7 +142,7 @@
     </div>
 
     <div class="card">
-        <h2>Line 2</h2>
+        <h2>Backrest Line</h2>
         <div class="input-group">
             <label>Target Per Day: <input type="number" id="target-line2" placeholder="Enter target"></label>
         </div>
@@ -136,7 +156,7 @@
     </div>
 
     <div class="card">
-        <h2>Line 3</h2>
+        <h2>Seat Line</h2>
         <div class="input-group">
             <label>Target Per Day: <input type="number" id="target-line3" placeholder="Enter target"></label>
         </div>
@@ -160,18 +180,22 @@
             } else if (hours >= 14 && hours < 22) {
                 return { shift: "Afternoon Shift", start: 14, end: 22 };
             } else {
-                return { shift: "Night Shift", start: 22, end: 30 }; // End at 6 AM, using 30 (next day 6 AM)
+                return { shift: "Night Shift", start: 22, end: 6 };
             }
         }
 
         function updateShiftProgress() {
             const now = new Date();
             const shift = getCurrentShift();
-            const start = new Date();
+            let start = new Date();
             start.setHours(shift.start, 0, 0, 0);
-            const end = new Date(start);
+
+            let end = new Date(start);
+            if (shift.end <= shift.start) {
+                // Handle shift that crosses midnight
+                end.setDate(end.getDate() + 1);
+            }
             end.setHours(shift.end % 24, 0, 0, 0);
-            if (shift.end > 24) end.setDate(end.getDate() + 1);
 
             const progress = ((now - start) / (end - start)) * 100;
             const progressBar = document.getElementById('shift-progress-fill');
@@ -204,10 +228,10 @@
 
                 if (current >= halfDayTarget * 0.9 && current <= halfDayTarget * 1.1) {
                     result.textContent = "Doing Good";
-                    progressBar.style.backgroundColor = "green";
+                    progressBar.style.background = "linear-gradient(90deg, #03dac6, #018786)";
                 } else {
                     result.textContent = "Needs Improvement";
-                    progressBar.style.backgroundColor = "red";
+                    progressBar.style.background = "linear-gradient(90deg, #b00020, #f50057)";
                 }
             });
         }
