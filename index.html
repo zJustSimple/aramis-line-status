@@ -157,6 +157,12 @@
             background: linear-gradient(90deg, #03dac6, #018786);
             transition: width 0.3s ease-in-out;
         }
+
+        #current-time-display {
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -166,6 +172,7 @@
         <div id="shift-progress-bar">
             <div id="shift-progress-fill">0%</div>
         </div>
+        <div id="current-time-display">00:00</div>
     </div>
 
     <div class="card">
@@ -216,25 +223,15 @@
     <button id="check-all" onclick="checkAllPerformance()">Check All</button>
 
     <script>
-        function getCurrentShift() {
-            const now = new Date();
-            const hours = now.getHours();
-            let shift = "";
-            if (hours >= 6 && hours < 14) {
-                shift = "Morning Shift";
-            } else if (hours >= 14 && hours < 22) {
-                shift = "Afternoon Shift";
-            } else {
-                shift = "Night Shift";
-            }
-            return shift;
-        }
-
         function updateShiftProgress() {
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
             const totalMinutes = hours * 60 + minutes; // Total minutes since midnight
+
+            // Format the current time as HH:MM
+            const formattedTime = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+            document.getElementById('current-time-display').textContent = formattedTime;
 
             let shiftStartTime = 0;
             let shiftEndTime = 0;
@@ -243,17 +240,14 @@
             const shiftDuration = 8 * 60; // 8 hours in minutes
 
             if (hours >= 6 && hours < 14) {
-                // Morning shift: 6:00 AM - 2:00 PM
                 shiftStartTime = 6 * 60;
                 shiftEndTime = 14 * 60;
                 shiftName = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
-                // Afternoon shift: 2:00 PM - 10:00 PM
                 shiftStartTime = 14 * 60;
                 shiftEndTime = 22 * 60;
                 shiftName = "Afternoon Shift";
             } else {
-                // Night shift: 10:00 PM - 6:00 AM (next day)
                 if (hours >= 22) {
                     shiftStartTime = 22 * 60;
                     shiftEndTime = (24 + 6) * 60; // 6:00 AM of next day
@@ -264,7 +258,6 @@
                 shiftName = "Night Shift";
             }
 
-            // If current time is before shift start time or after shift end time, reset progress
             if (totalMinutes < shiftStartTime || totalMinutes >= shiftEndTime) {
                 document.getElementById('current-shift').textContent = "Shift ended or not started";
                 document.getElementById('shift-progress-fill').style.width = "0%";
@@ -272,11 +265,9 @@
                 return;
             }
 
-            // Calculate progress
             const timeElapsed = totalMinutes - shiftStartTime;
             const shiftProgress = Math.min((timeElapsed / shiftDuration) * 100, 100);
 
-            // Update shift information on page
             document.getElementById('current-shift').textContent = shiftName;
             document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
