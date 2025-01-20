@@ -239,26 +239,39 @@
             let shiftStartTime = 0;
             let shiftName = "";
 
+            // Determine shift start time and name
             if (hours >= 6 && hours < 14) {
-                shiftStartTime = 6 * 60;
+                shiftStartTime = 6 * 60; // 6 AM
                 shiftName = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
-                shiftStartTime = 14 * 60;
+                shiftStartTime = 14 * 60; // 2 PM
                 shiftName = "Afternoon Shift";
             } else {
-                shiftStartTime = 22 * 60;
+                shiftStartTime = 22 * 60; // 10 PM
                 shiftName = "Night Shift";
             }
 
             const timeElapsed = (hours * 60 + minutes) - shiftStartTime;
-            let shiftProgress = Math.min((timeElapsed / shiftDuration) * 100, 100);
+            let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
+            // Cap the progress to a max of 100%
+            if (shiftProgress > 100) {
+                shiftProgress = 100;
+            }
+
+            // Ensure progress is not negative
             if (shiftProgress < 0) shiftProgress = 0;
 
             document.getElementById('current-shift').textContent = shiftName;
             document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
         }
+
+        // Update shift progress every minute (60000 milliseconds)
+        setInterval(updateShiftProgress, 60000);
+
+        // Initial call to update immediately after the page loads
+        updateShiftProgress();
 
         function checkLinePerformance(lineNumber) {
             const target = document.getElementById(`target-line${lineNumber}`).value;
@@ -299,10 +312,6 @@
                 checkButton.disabled = !target || !current;
             });
         });
-
-        // Update shift progress immediately
-        updateShiftProgress();
-        setInterval(updateShiftProgress, 60000); // Update every minute
     </script>
 </body>
 </html>
