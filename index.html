@@ -301,38 +301,24 @@
 
             if (!target || !current) return;
 
-            const halfDayTarget = target * 0.5;
-            const progress = (current / halfDayTarget) * 100;
-            const result = document.getElementById(`result-line${lineNumber}`);
-            const progressBar = document.getElementById(`progress-line${lineNumber}`);
-            const stars = document.getElementById(`stars-line${lineNumber}`);
-            const performance = document.getElementById(`performance-line${lineNumber}`);
-
-            progressBar.style.width = `${Math.min(progress, 100)}%`;
-            progressBar.textContent = `${Math.round(progress)}%`;
-
-            if (current >= halfDayTarget * 0.9) {
-                result.textContent = "Doing good!";
-                result.style.color = "green";
-            } else {
-                result.textContent = "Needs improvement!";
-                result.style.color = "red";
-            }
-
             // Calculate star rating based on performance and time
             const now = new Date();
             const elapsedMinutes = now.getHours() * 60 + now.getMinutes();
             let targetProgress = 0;
 
-            if (elapsedMinutes <= 60) {
-                targetProgress = 0.1 * target; // 10% after the first hour
-            } else if (elapsedMinutes <= 240) {
-                targetProgress = 0.45 * target; // 45% by lunch break
-            } else if (elapsedMinutes <= 300) {
-                targetProgress = 0.5 * target; // 50% at the end of 4 hours
-            } else {
-                targetProgress = target; // full target at end of shift
-            }
+            const shiftDuration = 480; // 8 hours = 480 minutes (assuming 8-hour shift)
+
+            // Time factor is normalized to a value between 0 (start) and 1 (end of shift)
+            const timeFactor = elapsedMinutes / shiftDuration;
+
+            // Exponential curve formula (can adjust the power to control how steep the curve is)
+            const progressMultiplier = Math.pow(timeFactor, 1.5);  // 1.5 gives a smoother exponential curve
+
+            // Calculate expected progress using the exponential curve
+            targetProgress = progressMultiplier * target;
+
+            // Ensure that targetProgress does not exceed the full target value
+            targetProgress = Math.min(targetProgress, target);
 
             const actualProgress = (current / targetProgress) * 100;
 
@@ -342,12 +328,20 @@
             else if (actualProgress >= 40) starsCount = 3;
             else if (actualProgress >= 20) starsCount = 2;
 
+            const stars = document.getElementById(`stars-line${lineNumber}`);
+            const performance = document.getElementById(`performance-line${lineNumber}`);
+
             stars.innerHTML = "★".repeat(starsCount) + "☆".repeat(5 - starsCount);
 
+            // Set performance evaluation text based on actual progress
             if (actualProgress >= 80) performance.textContent = "Excellent";
             else if (actualProgress >= 60) performance.textContent = "Good";
             else if (actualProgress >= 40) performance.textContent = "Fair";
             else performance.textContent = "Needs Improvement";
+
+            const progressBar = document.getElementById(`progress-line${lineNumber}`);
+            progressBar.style.width = `${Math.min(actualProgress, 100)}%`;
+            progressBar.textContent = `${Math.round(actualProgress)}%`;
         }
 
         function checkAllPerformance() {
