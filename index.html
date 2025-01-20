@@ -90,13 +90,13 @@
             border-radius: 10px;
             overflow: hidden;
             margin-top: 10px;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            text-align: right;
+            text-align: center;
             line-height: 20px;
-            padding-right: 5px;
             color: white;
             border-radius: 10px;
             background: linear-gradient(90deg, #6200ea, #3700b3);
@@ -149,9 +149,8 @@
 
         #shift-progress-fill {
             height: 100%;
-            text-align: right;
+            text-align: center;
             line-height: 20px;
-            padding-right: 5px;
             color: white;
             border-radius: 10px;
             background: linear-gradient(90deg, #03dac6, #018786);
@@ -159,28 +158,18 @@
         }
 
         .stars {
-            font-size: 30px;
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .star {
             color: gold;
-            margin-top: 10px;
         }
 
-        .performance-indicator {
-            width: 100%;
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        .indicator-excellent {
-            background: #4caf50; /* Green */
-        }
-
-        .indicator-good {
-            background: #ffeb3b; /* Yellow */
-        }
-
-        .indicator-poor {
-            background: #f44336; /* Red */
+        .progress-color {
+            color: white;
+            font-weight: bold;
+            text-align: center;
         }
     </style>
 </head>
@@ -203,11 +192,11 @@
         </div>
         <div class="result" id="result-line1"></div>
         <div class="progress-bar">
-            <div class="progress-fill" id="progress-line1">0%</div>
+            <div class="progress-fill" id="progress-line1"></div>
         </div>
         <button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
-        <div class="stars" id="stars-line1"></div>
-        <div class="performance-indicator" id="indicator-line1"></div>
+        <div id="stars-line1" class="stars"></div>
+        <div id="performance-line1" class="progress-color"></div>
     </div>
 
     <div class="card">
@@ -220,11 +209,11 @@
         </div>
         <div class="result" id="result-line2"></div>
         <div class="progress-bar">
-            <div class="progress-fill" id="progress-line2">0%</div>
+            <div class="progress-fill" id="progress-line2"></div>
         </div>
         <button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
-        <div class="stars" id="stars-line2"></div>
-        <div class="performance-indicator" id="indicator-line2"></div>
+        <div id="stars-line2" class="stars"></div>
+        <div id="performance-line2" class="progress-color"></div>
     </div>
 
     <div class="card">
@@ -237,11 +226,11 @@
         </div>
         <div class="result" id="result-line3"></div>
         <div class="progress-bar">
-            <div class="progress-fill" id="progress-line3">0%</div>
+            <div class="progress-fill" id="progress-line3"></div>
         </div>
         <button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
-        <div class="stars" id="stars-line3"></div>
-        <div class="performance-indicator" id="indicator-line3"></div>
+        <div id="stars-line3" class="stars"></div>
+        <div id="performance-line3" class="progress-color"></div>
     </div>
 
     <button id="check-all" onclick="checkAllPerformance()">Check All</button>
@@ -270,6 +259,7 @@
             let shiftStartTime = 0;
             let shiftName = "";
 
+            // Determine shift start time and name
             if (hours >= 6 && hours < 14) {
                 shiftStartTime = 6 * 60; // 6 AM
                 shiftName = "Morning Shift";
@@ -284,13 +274,16 @@
             const currentTimeInMinutes = (hours * 60) + minutes;
 
             if (shiftStartTime > currentTimeInMinutes) {
-                shiftStartTime -= 1440; // Adjust for midnight shifts
+                shiftStartTime -= 1440; // Adjust the start time for midnight shifts (subtracting 24 hours).
             }
 
             const timeElapsed = currentTimeInMinutes - shiftStartTime;
             let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
-            if (shiftProgress > 100) shiftProgress = 100;
+            if (shiftProgress > 100) {
+                shiftProgress = 100;
+            }
+
             if (shiftProgress < 0) shiftProgress = 0;
 
             document.getElementById('current-shift').textContent = shiftName;
@@ -298,8 +291,8 @@
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
         }
 
-        // Update every minute
         setInterval(updateShiftProgress, 60000);
+
         updateShiftProgress();
 
         function checkLinePerformance(lineNumber) {
@@ -308,53 +301,70 @@
 
             if (!target || !current) return;
 
-            const shiftStartTime = new Date().getHours() * 60 + new Date().getMinutes();
-            const timeElapsed = shiftStartTime - (lineNumber === 1 ? 6 * 60 : lineNumber === 2 ? 14 * 60 : 22 * 60);
-            let expectedProgress = 0;
-
-            // Calculate expected progress based on the time of day
-            if (timeElapsed < 60) {
-                expectedProgress = 0; // Ramp-up phase, minimal progress
-            } else if (timeElapsed < 3 * 60 + 45) {
-                expectedProgress = 0.4 * target; // Pre-lunch, expect about 40% of progress
-            } else if (timeElapsed < 8 * 60) {
-                expectedProgress = target; // End of shift, 100% progress expected
-            }
-
-            const progress = (current / target) * 100;
+            const halfDayTarget = target * 0.5;
+            const progress = (current / halfDayTarget) * 100;
             const result = document.getElementById(`result-line${lineNumber}`);
             const progressBar = document.getElementById(`progress-line${lineNumber}`);
             const stars = document.getElementById(`stars-line${lineNumber}`);
-            const performanceIndicator = document.getElementById(`indicator-line${lineNumber}`);
+            const performance = document.getElementById(`performance-line${lineNumber}`);
 
-            progressBar.style.width = `${progress}%`;
-            result.textContent = `Current Progress: ${Math.round(progress)}%`;
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
 
-            // Star rating logic
-            let rating = 0;
-            if (progress < 50) rating = 1;
-            else if (progress < 60) rating = 2;
-            else if (progress < 80) rating = 3;
-            else if (progress < 90) rating = 4;
-            else rating = 5;
-
-            stars.textContent = "★".repeat(rating);
-
-            // Color-coded performance indicator
-            if (progress < 50) {
-                performanceIndicator.className = 'performance-indicator indicator-poor';
-            } else if (progress < 75) {
-                performanceIndicator.className = 'performance-indicator indicator-good';
+            if (current >= halfDayTarget * 0.9) {
+                result.textContent = "Doing good!";
+                result.style.color = "green";
             } else {
-                performanceIndicator.className = 'performance-indicator indicator-excellent';
+                result.textContent = "Needs improvement!";
+                result.style.color = "red";
             }
+
+            // Calculate star rating based on performance and time
+            const now = new Date();
+            const elapsedMinutes = now.getHours() * 60 + now.getMinutes();
+            let targetProgress = 0;
+
+            if (elapsedMinutes <= 60) {
+                targetProgress = 0.1 * target; // 10% after the first hour
+            } else if (elapsedMinutes <= 240) {
+                targetProgress = 0.45 * target; // 45% by lunch break
+            } else if (elapsedMinutes <= 300) {
+                targetProgress = 0.5 * target; // 50% at the end of 4 hours
+            } else {
+                targetProgress = target; // full target at end of shift
+            }
+
+            const actualProgress = (current / targetProgress) * 100;
+
+            let starsCount = 1;
+            if (actualProgress >= 80) starsCount = 5;
+            else if (actualProgress >= 60) starsCount = 4;
+            else if (actualProgress >= 40) starsCount = 3;
+            else if (actualProgress >= 20) starsCount = 2;
+
+            stars.innerHTML = "★".repeat(starsCount) + "☆".repeat(5 - starsCount);
+
+            if (actualProgress >= 80) performance.textContent = "Excellent";
+            else if (actualProgress >= 60) performance.textContent = "Good";
+            else if (actualProgress >= 40) performance.textContent = "Fair";
+            else performance.textContent = "Needs Improvement";
         }
 
         function checkAllPerformance() {
-            for (let i = 1; i <= 3; i++) {
-                checkLinePerformance(i);
-            }
+            checkLinePerformance(1);
+            checkLinePerformance(2);
+            checkLinePerformance(3);
         }
+
+        document.querySelectorAll('.input-group input').forEach(input => {
+            input.addEventListener('input', function() {
+                const lineNumber = this.id.split('-')[2];
+                const target = document.getElementById(`target-line${lineNumber}`).value;
+                const current = document.getElementById(`current-line${lineNumber}`).value;
+                const checkButton = document.getElementById(`check-line${lineNumber}`);
+                checkButton.disabled = !target || !current;
+            });
+        });
     </script>
 </body>
 </html>
