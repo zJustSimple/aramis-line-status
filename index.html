@@ -10,20 +10,45 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #1e1e1e, #121212);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
             color: #ffffff;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: auto;
+            overflow: hidden;
+        }
+
+        /* Create the animated wave background */
+        .wave-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e1e1e, #121212);
+            animation: gradientAnimation 15s ease infinite;
+            z-index: -1;
         }
 
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        .wave-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/alphawaves.png') repeat-x;
+            animation: scrollWave 10s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes scrollWave {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 0; }
         }
 
         .card {
@@ -180,6 +205,10 @@
     </style>
 </head>
 <body>
+    <!-- Add the wave and gradient backgrounds -->
+    <div class="wave-background"></div>
+    <div class="wave-effect"></div>
+
     <div id="shift-info">
         <h1>Production Line Performance Tracker</h1>
         <p>Current Shift: <span id="current-shift">Calculating...</span></p>
