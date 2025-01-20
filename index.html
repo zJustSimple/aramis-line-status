@@ -159,8 +159,28 @@
         }
 
         .stars {
-            font-size: 18px;
+            font-size: 30px;
             color: gold;
+            margin-top: 10px;
+        }
+
+        .performance-indicator {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .indicator-excellent {
+            background: #4caf50; /* Green */
+        }
+
+        .indicator-good {
+            background: #ffeb3b; /* Yellow */
+        }
+
+        .indicator-poor {
+            background: #f44336; /* Red */
         }
     </style>
 </head>
@@ -186,6 +206,8 @@
             <div class="progress-fill" id="progress-line1">0%</div>
         </div>
         <button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
+        <div class="stars" id="stars-line1"></div>
+        <div class="performance-indicator" id="indicator-line1"></div>
     </div>
 
     <div class="card">
@@ -201,6 +223,8 @@
             <div class="progress-fill" id="progress-line2">0%</div>
         </div>
         <button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
+        <div class="stars" id="stars-line2"></div>
+        <div class="performance-indicator" id="indicator-line2"></div>
     </div>
 
     <div class="card">
@@ -216,6 +240,8 @@
             <div class="progress-fill" id="progress-line3">0%</div>
         </div>
         <button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
+        <div class="stars" id="stars-line3"></div>
+        <div class="performance-indicator" id="indicator-line3"></div>
     </div>
 
     <button id="check-all" onclick="checkAllPerformance()">Check All</button>
@@ -245,29 +271,26 @@
             let shiftName = "";
 
             if (hours >= 6 && hours < 14) {
-                shiftStartTime = 6 * 60;
+                shiftStartTime = 6 * 60; // 6 AM
                 shiftName = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
-                shiftStartTime = 14 * 60;
+                shiftStartTime = 14 * 60; // 2 PM
                 shiftName = "Afternoon Shift";
             } else {
-                shiftStartTime = 22 * 60;
+                shiftStartTime = 22 * 60; // 10 PM
                 shiftName = "Night Shift";
             }
 
             const currentTimeInMinutes = (hours * 60) + minutes;
 
             if (shiftStartTime > currentTimeInMinutes) {
-                shiftStartTime -= 1440;
+                shiftStartTime -= 1440; // Adjust for midnight shifts
             }
 
             const timeElapsed = currentTimeInMinutes - shiftStartTime;
             let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
-            if (shiftProgress > 100) {
-                shiftProgress = 100;
-            }
-
+            if (shiftProgress > 100) shiftProgress = 100;
             if (shiftProgress < 0) shiftProgress = 0;
 
             document.getElementById('current-shift').textContent = shiftName;
@@ -275,80 +298,63 @@
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
         }
 
+        // Update every minute
         setInterval(updateShiftProgress, 60000);
-
         updateShiftProgress();
 
         function checkLinePerformance(lineNumber) {
-            const target = parseFloat(document.getElementById(`target-line${lineNumber}`).value);
-            const current = parseFloat(document.getElementById(`current-line${lineNumber}`).value);
+            const target = document.getElementById(`target-line${lineNumber}`).value;
+            const current = document.getElementById(`current-line${lineNumber}`).value;
 
-            if (isNaN(target) || isNaN(current) || target <= 0 || current < 0) return;
+            if (!target || !current) return;
 
-            const shiftDuration = 480;
-            const currentTime = new Date();
-            const hours = currentTime.getHours();
-            const minutes = currentTime.getMinutes();
-            const totalMinutes = (hours * 60) + minutes;
+            const shiftStartTime = new Date().getHours() * 60 + new Date().getMinutes();
+            const timeElapsed = shiftStartTime - (lineNumber === 1 ? 6 * 60 : lineNumber === 2 ? 14 * 60 : 22 * 60);
+            let expectedProgress = 0;
 
-            let shiftStartTime = 0;
-            if (hours >= 6 && hours < 14) { shiftStartTime = 6 * 60; }
-            else if (hours >= 14 && hours < 22) { shiftStartTime = 14 * 60; }
-            else { shiftStartTime = 22 * 60; }
+            // Calculate expected progress based on the time of day
+            if (timeElapsed < 60) {
+                expectedProgress = 0; // Ramp-up phase, minimal progress
+            } else if (timeElapsed < 3 * 60 + 45) {
+                expectedProgress = 0.4 * target; // Pre-lunch, expect about 40% of progress
+            } else if (timeElapsed < 8 * 60) {
+                expectedProgress = target; // End of shift, 100% progress expected
+            }
 
-            const timeElapsed = totalMinutes - shiftStartTime;
             const progress = (current / target) * 100;
-
-            let expectedHalfDayTarget = target * 0.5;
-            let adjustedHalfDayTarget = expectedHalfDayTarget * 0.9;
-
-            let expectedProgress = (timeElapsed / shiftDuration) * 100;
-            let actualProgress = (current / target) * 100;
-
-            document.getElementById(`progress-line${lineNumber}`).style.width = `${Math.min(actualProgress, 100)}%`;
-            document.getElementById(`progress-line${lineNumber}`).textContent = `${Math.round(actualProgress)}%`;
-
             const result = document.getElementById(`result-line${lineNumber}`);
+            const progressBar = document.getElementById(`progress-line${lineNumber}`);
+            const stars = document.getElementById(`stars-line${lineNumber}`);
+            const performanceIndicator = document.getElementById(`indicator-line${lineNumber}`);
 
-            if (current >= adjustedHalfDayTarget) {
-                result.textContent = "Doing good!";
-                result.style.color = "green";
+            progressBar.style.width = `${progress}%`;
+            result.textContent = `Current Progress: ${Math.round(progress)}%`;
+
+            // Star rating logic
+            let rating = 0;
+            if (progress < 50) rating = 1;
+            else if (progress < 60) rating = 2;
+            else if (progress < 80) rating = 3;
+            else if (progress < 90) rating = 4;
+            else rating = 5;
+
+            stars.textContent = "★".repeat(rating);
+
+            // Color-coded performance indicator
+            if (progress < 50) {
+                performanceIndicator.className = 'performance-indicator indicator-poor';
+            } else if (progress < 75) {
+                performanceIndicator.className = 'performance-indicator indicator-good';
             } else {
-                result.textContent = "Needs improvement!";
-                result.style.color = "red";
+                performanceIndicator.className = 'performance-indicator indicator-excellent';
             }
-
-            let starRating = 1;
-            if (actualProgress >= 90) {
-                starRating = 5;
-            } else if (actualProgress >= 75) {
-                starRating = 4;
-            } else if (actualProgress >= 50) {
-                starRating = 3;
-            } else if (actualProgress >= 30) {
-                starRating = 2;
-            } else {
-                starRating = 1;
-            }
-
-            document.getElementById(`result-line${lineNumber}`).innerHTML += ` <span class="stars">${"★".repeat(starRating)}${"☆".repeat(5 - starRating)}</span>`;
         }
 
         function checkAllPerformance() {
-            checkLinePerformance(1);
-            checkLinePerformance(2);
-            checkLinePerformance(3);
+            for (let i = 1; i <= 3; i++) {
+                checkLinePerformance(i);
+            }
         }
-
-        document.querySelectorAll('.input-group input').forEach(input => {
-            input.addEventListener('input', function() {
-                const lineNumber = this.id.split('-')[2];
-                const target = document.getElementById(`target-line${lineNumber}`).value;
-                const current = document.getElementById(`current-line${lineNumber}`).value;
-                const checkButton = document.getElementById(`check-line${lineNumber}`);
-                checkButton.disabled = !target || !current;
-            });
-        });
     </script>
 </body>
 </html>
