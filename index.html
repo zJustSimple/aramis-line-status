@@ -157,6 +157,11 @@
             background: linear-gradient(90deg, #03dac6, #018786);
             transition: width 0.3s ease-in-out;
         }
+
+        .stars {
+            font-size: 18px;
+            color: gold;
+        }
     </style>
 </head>
 <body>
@@ -239,42 +244,30 @@
             let shiftStartTime = 0;
             let shiftName = "";
 
-            // Determine shift start time and name
             if (hours >= 6 && hours < 14) {
-                shiftStartTime = 6 * 60; // 6 AM
+                shiftStartTime = 6 * 60;
                 shiftName = "Morning Shift";
             } else if (hours >= 14 && hours < 22) {
-                shiftStartTime = 14 * 60; // 2 PM
+                shiftStartTime = 14 * 60;
                 shiftName = "Afternoon Shift";
             } else {
-                shiftStartTime = 22 * 60; // 10 PM
+                shiftStartTime = 22 * 60;
                 shiftName = "Night Shift";
             }
 
-            // If the current time is past the shift start time and we're in the "Night Shift" scenario,
-            // account for the next day's shift.
             const currentTimeInMinutes = (hours * 60) + minutes;
 
             if (shiftStartTime > currentTimeInMinutes) {
-                shiftStartTime -= 1440; // Adjust the start time for midnight shifts (subtracting 24 hours).
+                shiftStartTime -= 1440;
             }
 
             const timeElapsed = currentTimeInMinutes - shiftStartTime;
             let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
-            // Debugging output
-            console.log("Shift Progress Debug:");
-            console.log(`Current Time: ${hours}:${minutes}`);
-            console.log(`Shift Start Time: ${shiftStartTime / 60}:00`);
-            console.log(`Time Elapsed: ${timeElapsed} minutes`);
-            console.log(`Shift Progress: ${shiftProgress}%`);
-
-            // Cap the progress to a max of 100%
             if (shiftProgress > 100) {
                 shiftProgress = 100;
             }
 
-            // Ensure progress is not negative
             if (shiftProgress < 0) shiftProgress = 0;
 
             document.getElementById('current-shift').textContent = shiftName;
@@ -282,38 +275,63 @@
             document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
         }
 
-        // Update shift progress every minute (60000 milliseconds)
         setInterval(updateShiftProgress, 60000);
 
-        // Initial call to update immediately after the page loads
         updateShiftProgress();
 
         function checkLinePerformance(lineNumber) {
-            const target = document.getElementById(`target-line${lineNumber}`).value;
-            const current = document.getElementById(`current-line${lineNumber}`).value;
+            const target = parseFloat(document.getElementById(`target-line${lineNumber}`).value);
+            const current = parseFloat(document.getElementById(`current-line${lineNumber}`).value);
 
-            if (!target || !current) return;
+            if (isNaN(target) || isNaN(current) || target <= 0 || current < 0) return;
 
-            const halfDayTarget = target * 0.5;
-            const progress = (current / halfDayTarget) * 100;
+            const shiftDuration = 480;
+            const currentTime = new Date();
+            const hours = currentTime.getHours();
+            const minutes = currentTime.getMinutes();
+            const totalMinutes = (hours * 60) + minutes;
+
+            let shiftStartTime = 0;
+            if (hours >= 6 && hours < 14) { shiftStartTime = 6 * 60; }
+            else if (hours >= 14 && hours < 22) { shiftStartTime = 14 * 60; }
+            else { shiftStartTime = 22 * 60; }
+
+            const timeElapsed = totalMinutes - shiftStartTime;
+            const progress = (current / target) * 100;
+
+            let expectedHalfDayTarget = target * 0.5;
+            let adjustedHalfDayTarget = expectedHalfDayTarget * 0.9;
+
+            let expectedProgress = (timeElapsed / shiftDuration) * 100;
+            let actualProgress = (current / target) * 100;
+
+            document.getElementById(`progress-line${lineNumber}`).style.width = `${Math.min(actualProgress, 100)}%`;
+            document.getElementById(`progress-line${lineNumber}`).textContent = `${Math.round(actualProgress)}%`;
+
             const result = document.getElementById(`result-line${lineNumber}`);
-            const progressBar = document.getElementById(`progress-line${lineNumber}`);
 
-            console.log(`Line ${lineNumber} Debug:`);
-            console.log(`Target: ${target}, Current: ${current}`);
-            console.log(`Half Day Target: ${halfDayTarget}`);
-            console.log(`Progress: ${progress}%`);
-
-            progressBar.style.width = `${Math.min(progress, 100)}%`;
-            progressBar.textContent = `${Math.round(progress)}%`;
-
-            if (current >= halfDayTarget * 0.9) {
+            if (current >= adjustedHalfDayTarget) {
                 result.textContent = "Doing good!";
                 result.style.color = "green";
             } else {
                 result.textContent = "Needs improvement!";
                 result.style.color = "red";
             }
+
+            let starRating = 1;
+            if (actualProgress >= 90) {
+                starRating = 5;
+            } else if (actualProgress >= 75) {
+                starRating = 4;
+            } else if (actualProgress >= 50) {
+                starRating = 3;
+            } else if (actualProgress >= 30) {
+                starRating = 2;
+            } else {
+                starRating = 1;
+            }
+
+            document.getElementById(`result-line${lineNumber}`).innerHTML += ` <span class="stars">${"★".repeat(starRating)}${"☆".repeat(5 - starRating)}</span>`;
         }
 
         function checkAllPerformance() {
@@ -322,7 +340,6 @@
             checkLinePerformance(3);
         }
 
-        // Enable check buttons when both target and current output are entered
         document.querySelectorAll('.input-group input').forEach(input => {
             input.addEventListener('input', function() {
                 const lineNumber = this.id.split('-')[2];
