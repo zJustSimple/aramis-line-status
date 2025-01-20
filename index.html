@@ -251,9 +251,18 @@
                 shiftName = "Night Shift";
             }
 
-            const timeElapsed = (hours * 60 + minutes) - shiftStartTime;
+            // If the current time is past the shift start time and we're in the "Night Shift" scenario,
+            // account for the next day's shift.
+            const currentTimeInMinutes = (hours * 60) + minutes;
+
+            if (shiftStartTime > currentTimeInMinutes) {
+                shiftStartTime -= 1440; // Adjust the start time for midnight shifts (subtracting 24 hours).
+            }
+
+            const timeElapsed = currentTimeInMinutes - shiftStartTime;
             let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
+            // Debugging output
             console.log("Shift Progress Debug:");
             console.log(`Current Time: ${hours}:${minutes}`);
             console.log(`Shift Start Time: ${shiftStartTime / 60}:00`);
