@@ -171,6 +171,12 @@
             font-weight: bold;
             text-align: center;
         }
+
+        .expected-production {
+            font-size: 16px;
+            color: #03dac6;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -197,6 +203,7 @@
         <button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
         <div id="stars-line1" class="stars"></div>
         <div id="performance-line1" class="progress-color"></div>
+        <div id="expected-line1" class="expected-production"></div>
     </div>
 
     <div class="card">
@@ -214,6 +221,7 @@
         <button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
         <div id="stars-line2" class="stars"></div>
         <div id="performance-line2" class="progress-color"></div>
+        <div id="expected-line2" class="expected-production"></div>
     </div>
 
     <div class="card">
@@ -231,6 +239,7 @@
         <button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
         <div id="stars-line3" class="stars"></div>
         <div id="performance-line3" class="progress-color"></div>
+        <div id="expected-line3" class="expected-production"></div>
     </div>
 
     <button id="check-all" onclick="checkAllPerformance()">Check All</button>
@@ -259,7 +268,6 @@
             let shiftStartTime = 0;
             let shiftName = "";
 
-            // Determine shift start time and name
             if (hours >= 6 && hours < 14) {
                 shiftStartTime = 6 * 60; // 6 AM
                 shiftName = "Morning Shift";
@@ -292,56 +300,74 @@
         }
 
         setInterval(updateShiftProgress, 60000);
-
         updateShiftProgress();
 
+        function getExpectedProduction(target, elapsedMinutes) {
+            const totalShiftDuration = 480; // 8 hours = 480 minutes
+            const progressFactor = Math.pow(elapsedMinutes / totalShiftDuration, 1.5);  // Exponential curve
+            return Math.round(target * progressFactor);
+        }
+
         function checkLinePerformance(lineNumber) {
-            const target = document.getElementById(`target-line${lineNumber}`).value;
-            const current = document.getElementById(`current-line${lineNumber}`).value;
-
-            if (!target || !current) return;
-
-            // Calculate star rating based on performance and time
-            const now = new Date();
-            const elapsedMinutes = now.getHours() * 60 + now.getMinutes();
-            let targetProgress = 0;
-
-            const shiftDuration = 480; // 8 hours = 480 minutes (assuming 8-hour shift)
-
-            // Time factor is normalized to a value between 0 (start) and 1 (end of shift)
-            const timeFactor = elapsedMinutes / shiftDuration;
-
-            // Exponential curve formula (can adjust the power to control how steep the curve is)
-            const progressMultiplier = Math.pow(timeFactor, 1.5);  // 1.5 gives a smoother exponential curve
-
-            // Calculate expected progress using the exponential curve
-            targetProgress = progressMultiplier * target;
-
-            // Ensure that targetProgress does not exceed the full target value
-            targetProgress = Math.min(targetProgress, target);
-
-            const actualProgress = (current / targetProgress) * 100;
-
-            let starsCount = 1;
-            if (actualProgress >= 80) starsCount = 5;
-            else if (actualProgress >= 60) starsCount = 4;
-            else if (actualProgress >= 40) starsCount = 3;
-            else if (actualProgress >= 20) starsCount = 2;
-
-            const stars = document.getElementById(`stars-line${lineNumber}`);
-            const performance = document.getElementById(`performance-line${lineNumber}`);
-
-            stars.innerHTML = "★".repeat(starsCount) + "☆".repeat(5 - starsCount);
-
-            // Set performance evaluation text based on actual progress
-            if (actualProgress >= 80) performance.textContent = "Excellent";
-            else if (actualProgress >= 60) performance.textContent = "Good";
-            else if (actualProgress >= 40) performance.textContent = "Fair";
-            else performance.textContent = "Needs Improvement";
-
+            const targetInput = document.getElementById(`target-line${lineNumber}`);
+            const currentInput = document.getElementById(`current-line${lineNumber}`);
+            const resultDisplay = document.getElementById(`result-line${lineNumber}`);
             const progressBar = document.getElementById(`progress-line${lineNumber}`);
-            progressBar.style.width = `${Math.min(actualProgress, 100)}%`;
-            progressBar.textContent = `${Math.round(actualProgress)}%`;
+            const starsDisplay = document.getElementById(`stars-line${lineNumber}`);
+            const performanceDisplay = document.getElementById(`performance-line${lineNumber}`);
+            const expectedDisplay = document.getElementById(`expected-line${lineNumber}`);
+
+            const target = parseFloat(targetInput.value);
+            const currentOutput = parseFloat(currentInput.value);
+
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+
+            let elapsedMinutes = 0;
+
+            if (hours >= 6 && hours < 14) {
+                elapsedMinutes = (hours - 6) * 60 + minutes;
+            } else if (hours >= 14 && hours < 22) {
+                elapsedMinutes = (hours - 14) * 60 + minutes;
+            } else {
+                if (hours >= 22) {
+                    elapsedMinutes = (hours - 22) * 60 + minutes;
+                } else {
+                    elapsedMinutes = (hours + 2) * 60 + minutes;
+                }
+            }
+
+            const expectedProduction = getExpectedProduction(target, elapsedMinutes);
+
+            if (isNaN(target) || isNaN(currentOutput)) {
+                resultDisplay.textContent = "Please enter valid numbers for target and current output.";
+                return;
+            }
+
+            const progressPercentage = (currentOutput / target) * 100;
+            const performancePercentage = (currentOutput / expectedProduction) * 100;
+            const performancePercentageRounded = Math.round(performancePercentage);
+
+            resultDisplay.textContent = `Production: ${currentOutput} / ${target} (${Math.round(progressPercentage)}%)`;
+            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
+
+            let stars = '';
+            if (performancePercentageRounded >= 100) {
+                stars = '★★★★★';
+            } else if (performancePercentageRounded >= 80) {
+                stars = '★★★★';
+            } else if (performancePercentageRounded >= 60) {
+                stars = '★★★';
+            } else if (performancePercentageRounded >= 40) {
+                stars = '★★';
+            } else if (performancePercentageRounded >= 20) {
+                stars = '★';
+            }
+
+            starsDisplay.innerHTML = stars;
+            performanceDisplay.textContent = `Performance: ${performancePercentageRounded}%`;
+            expectedDisplay.textContent = `Expected Production: ${expectedProduction} units`;
         }
 
         function checkAllPerformance() {
@@ -350,14 +376,16 @@
             checkLinePerformance(3);
         }
 
-        document.querySelectorAll('.input-group input').forEach(input => {
-            input.addEventListener('input', function() {
-                const lineNumber = this.id.split('-')[2];
-                const target = document.getElementById(`target-line${lineNumber}`).value;
-                const current = document.getElementById(`current-line${lineNumber}`).value;
-                const checkButton = document.getElementById(`check-line${lineNumber}`);
-                checkButton.disabled = !target || !current;
-            });
+        document.getElementById('target-line1').addEventListener('input', () => {
+            document.getElementById('check-line1').disabled = false;
+        });
+
+        document.getElementById('target-line2').addEventListener('input', () => {
+            document.getElementById('check-line2').disabled = false;
+        });
+
+        document.getElementById('target-line3').addEventListener('input', () => {
+            document.getElementById('check-line3').disabled = false;
         });
     </script>
 </body>
