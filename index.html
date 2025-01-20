@@ -254,6 +254,12 @@
             const timeElapsed = (hours * 60 + minutes) - shiftStartTime;
             let shiftProgress = (timeElapsed / shiftDuration) * 100;
 
+            console.log("Shift Progress Debug:");
+            console.log(`Current Time: ${hours}:${minutes}`);
+            console.log(`Shift Start Time: ${shiftStartTime / 60}:00`);
+            console.log(`Time Elapsed: ${timeElapsed} minutes`);
+            console.log(`Shift Progress: ${shiftProgress}%`);
+
             // Cap the progress to a max of 100%
             if (shiftProgress > 100) {
                 shiftProgress = 100;
@@ -283,7 +289,12 @@
             const progress = (current / halfDayTarget) * 100;
             const result = document.getElementById(`result-line${lineNumber}`);
             const progressBar = document.getElementById(`progress-line${lineNumber}`);
-            
+
+            console.log(`Line ${lineNumber} Debug:`);
+            console.log(`Target: ${target}, Current: ${current}`);
+            console.log(`Half Day Target: ${halfDayTarget}`);
+            console.log(`Progress: ${progress}%`);
+
             progressBar.style.width = `${Math.min(progress, 100)}%`;
             progressBar.textContent = `${Math.round(progress)}%`;
 
