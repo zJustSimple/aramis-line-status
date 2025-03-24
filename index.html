@@ -14,7 +14,6 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            /* Remove overflow: hidden to fix scrolling */
         }
 
         /* Create the animated wave background */
@@ -321,22 +320,100 @@
     <div id="calculator" class="tab-content">
         <div class="card">
             <h2>Order Remainder Calculator</h2>
+
+            <!-- Total From Database (same for all packets) -->
             <div class="input-group">
                 <label>Total From Database: <input type="number" id="total-from-database" placeholder="Enter total"></label>
             </div>
+
+            <!-- Packet 1 -->
+            <h3>Packet 1</h3>
             <div class="input-group">
-                <label>Complete Pallets: <input type="number" id="complete-pallets" placeholder="Enter complete pallets"></label>
+                <label>Complete Pallets: <input type="number" id="complete-pallets-packet1" placeholder="Enter complete pallets"></label>
             </div>
             <div class="input-group">
-                <label>Individual Packaged Units: <input type="number" id="individual-packaged-units" placeholder="Enter individual units"></label>
+                <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
             </div>
+            <div class="input-group">
+                <label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
+            </div>
+            <div class="input-group">
+                <label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
+            </div>
+
+            <!-- Packet 2 -->
+            <h3>Packet 2</h3>
+            <div class="input-group">
+                <label>Complete Pallets: <input type="number" id="complete-pallets-packet2" placeholder="Enter complete pallets"></label>
+            </div>
+            <div class="input-group">
+                <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
+            </div>
+
+            <!-- Packet 3 -->
+            <h3>Packet 3</h3>
+            <div class="input-group">
+                <label>Complete Pallets: <input type="number" id="complete-pallets-packet3" placeholder="Enter complete pallets"></label>
+            </div>
+            <div class="input-group">
+                <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
+            </div>
+            <div class="input-group">
+                <label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
+            </div>
+            <div class="input-group">
+                <label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
+            </div>
+            <div class="input-group">
+                <label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
+            </div>
+
             <button onclick="calculateRemainder()">Calculate</button>
             <div class="result" id="calculator-result"></div>
         </div>
     </div>
 
     <script>
-        // Existing JavaScript code remains unchanged
+        // Existing JavaScript code for Performance Tracker
         function getCurrentShift() {
             const now = new Date();
             const hours = now.getHours();
@@ -479,217 +556,146 @@
         document.getElementById('target-line3').addEventListener('input', () => {
             document.getElementById('check-line3').disabled = false;
         });
-<!-- Order Remainder Calculator Tab -->
-<div id="calculator" class="tab-content">
-    <div class="card">
-        <h2>Order Remainder Calculator</h2>
 
-        <!-- Total From Database (same for all packets) -->
-        <div class="input-group">
-            <label>Total From Database: <input type="number" id="total-from-database" placeholder="Enter total"></label>
-        </div>
+        // Full calculator logic
+        function calculateRemainder() {
+            // Total From Database (same for all packets)
+            const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
 
-        <!-- Packet 1 -->
-        <h3>Packet 1</h3>
-        <div class="input-group">
-            <label>Complete Pallets: <input type="number" id="complete-pallets-packet1" placeholder="Enter complete pallets"></label>
-        </div>
-        <div class="input-group">
-            <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
-        </div>
-        <div class="input-group">
-            <label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
-        </div>
+            // Packet 1
+            const completePalletsPacket1 = parseFloat(document.getElementById('complete-pallets-packet1').value);
+            const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value);
+            const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value);
+            const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value);
+            const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value);
+            const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value);
+            const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value);
+            const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value);
 
-        <!-- Packet 2 -->
-        <h3>Packet 2</h3>
-        <div class="input-group">
-            <label>Complete Pallets: <input type="number" id="complete-pallets-packet2" placeholder="Enter complete pallets"></label>
-        </div>
-        <div class="input-group">
-            <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
-        </div>
+            // Packet 2
+            const completePalletsPacket2 = parseFloat(document.getElementById('complete-pallets-packet2').value);
+            const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value);
+            const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value);
+            const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value);
+            const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value);
+            const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value);
+            const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value);
+            const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value);
 
-        <!-- Packet 3 -->
-        <h3>Packet 3</h3>
-        <div class="input-group">
-            <label>Complete Pallets: <input type="number" id="complete-pallets-packet3" placeholder="Enter complete pallets"></label>
-        </div>
-        <div class="input-group">
-            <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
-        </div>
-        <div class="input-group">
-            <label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
-        </div>
-        <div class="input-group">
-            <label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
-        </div>
-        <div class="input-group">
-            <label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
-        </div>
+            // Packet 3
+            const completePalletsPacket3 = parseFloat(document.getElementById('complete-pallets-packet3').value);
+            const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value);
+            const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value);
+            const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value);
+            const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value);
+            const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value);
+            const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value);
+            const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value);
 
-        <button onclick="calculateRemainder()">Calculate</button>
-        <div class="result" id="calculator-result"></div>
-    </div>
-</div>
+            // Validate inputs
+            if (isNaN(totalFromDatabase)) {
+                document.getElementById('calculator-result').textContent = "Please enter a valid Total From Database.";
+                return;
+            }
 
-<script>
-    // Full calculator logic
-    function calculateRemainder() {
-        // Total From Database (same for all packets)
-        const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
+            // Calculate remainders for each packet
+            const remainderPacket1 = totalFromDatabase - completePalletsPacket1 - individualPackagedPacket1;
+            const remainderPacket2 = totalFromDatabase - completePalletsPacket2 - individualPackagedPacket2;
+            const remainderPacket3 = totalFromDatabase - completePalletsPacket3 - individualPackagedPacket3;
 
-        // Packet 1
-        const completePalletsPacket1 = parseFloat(document.getElementById('complete-pallets-packet1').value);
-        const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value);
-        const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value);
-        const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value);
-        const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value);
-        const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value);
-        const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value);
-        const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value);
+            // Calculate remaining steps for Packet 1
+            const remainingUpholsteredRabatabil = remainderPacket1 - upholsteredRabatabil;
+            const remainingUpholsteredLada = remainderPacket1 - upholsteredLada;
+            const remainingUpholsteredBratStanga = remainderPacket1 - upholsteredBratStanga;
+            const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
+            const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
+            const remainingAssembledRabatabilLada = upholsteredRabatabil - assembledRabatabilLada;
 
-        // Packet 2
-        const completePalletsPacket2 = parseFloat(document.getElementById('complete-pallets-packet2').value);
-        const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value);
-        const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value);
-        const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value);
-        const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value);
-        const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value);
-        const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value);
-        const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value);
+            // Calculate remaining steps for Packet 2
+            const remainingUpholsteredBratDreapta = remainderPacket2 - upholsteredBratDreapta;
+            const remainingUpholsteredSpatarMare = remainderPacket2 - upholsteredSpatarMare;
+            const remainingUpholsteredSpatarMic = remainderPacket2 - upholsteredSpatarMic;
+            const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
+            const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
+            const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
 
-        // Packet 3
-        const completePalletsPacket3 = parseFloat(document.getElementById('complete-pallets-packet3').value);
-        const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value);
-        const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value);
-        const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value);
-        const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value);
-        const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value);
-        const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value);
-        const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value);
+            // Calculate remaining steps for Packet 3
+            const remainingUpholsteredSezutFix = remainderPacket3 - upholsteredSezutFix;
+            const remainingUpholsteredSezutMobil = remainderPacket3 - upholsteredSezutMobil;
+            const remainingUpholsteredLadaMobila = remainderPacket3 - upholsteredLadaMobila;
+            const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
+            const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
+            const remainingAssembledSezutLada = upholsteredSezutMobil - assembledSezutLada;
 
-        // Validate inputs
-        if (isNaN(totalFromDatabase)) {
-            document.getElementById('calculator-result').textContent = "Please enter a valid Total From Database.";
-            return;
+            // Display results
+            const result = `
+                <h3>Packet 1</h3>
+                <p>Remaining Packets: ${remainderPacket1}</p>
+                <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
+                <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
+                <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
+                <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
+                <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
+                <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
+
+                <h3>Packet 2</h3>
+                <p>Remaining Packets: ${remainderPacket2}</p>
+                <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
+                <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
+                <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
+                <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
+                <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
+                <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
+
+                <h3>Packet 3</h3>
+                <p>Remaining Packets: ${remainderPacket3}</p>
+                <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
+                <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
+                <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
+                <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
+                <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
+                <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
+            `;
+
+            document.getElementById('calculator-result').innerHTML = result;
         }
 
-        // Calculate remainders for each packet
-        const remainderPacket1 = totalFromDatabase - completePalletsPacket1 - individualPackagedPacket1;
-        const remainderPacket2 = totalFromDatabase - completePalletsPacket2 - individualPackagedPacket2;
-        const remainderPacket3 = totalFromDatabase - completePalletsPacket3 - individualPackagedPacket3;
+        // Tab navigation logic
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-        // Calculate remaining steps for Packet 1
-        const remainingUpholsteredRabatabil = remainderPacket1 - upholsteredRabatabil;
-        const remainingUpholsteredLada = remainderPacket1 - upholsteredLada;
-        const remainingUpholsteredBratStanga = remainderPacket1 - upholsteredBratStanga;
-        const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
-        const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
-        const remainingAssembledRabatabilLada = upholsteredRabatabil - assembledRabatabilLada;
+            const buttons = document.querySelectorAll('.navbar button');
+            buttons.forEach(button => button.classList.remove('active'));
 
-        // Calculate remaining steps for Packet 2
-        const remainingUpholsteredBratDreapta = remainderPacket2 - upholsteredBratDreapta;
-        const remainingUpholsteredSpatarMare = remainderPacket2 - upholsteredSpatarMare;
-        const remainingUpholsteredSpatarMic = remainderPacket2 - upholsteredSpatarMic;
-        const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
-        const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
-        const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
-
-        // Calculate remaining steps for Packet 3
-        const remainingUpholsteredSezutFix = remainderPacket3 - upholsteredSezutFix;
-        const remainingUpholsteredSezutMobil = remainderPacket3 - upholsteredSezutMobil;
-        const remainingUpholsteredLadaMobila = remainderPacket3 - upholsteredLadaMobila;
-        const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
-        const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
-        const remainingAssembledSezutLada = upholsteredSezutMobil - assembledSezutLada;
-
-        // Display results
-        const result = `
-            <h3>Packet 1</h3>
-            <p>Remaining Packets: ${remainderPacket1}</p>
-            <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
-            <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
-            <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
-            <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
-            <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
-            <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
-
-            <h3>Packet 2</h3>
-            <p>Remaining Packets: ${remainderPacket2}</p>
-            <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
-            <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
-            <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
-            <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
-            <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
-            <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
-
-            <h3>Packet 3</h3>
-            <p>Remaining Packets: ${remainderPacket3}</p>
-            <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
-            <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
-            <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
-            <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
-            <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
-            <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
-        `;
-
-        document.getElementById('calculator-result').innerHTML = result;
-    }
-
-    // Tab navigation logic
-    function showTab(tabName) {
-        const tabs = document.querySelectorAll('.tab-content');
-        tabs.forEach(tab => tab.classList.remove('active'));
-
-        const buttons = document.querySelectorAll('.navbar button');
-        buttons.forEach(button => button.classList.remove('active'));
-
-        document.getElementById(tabName).classList.add('active');
-        document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
-    }
-</script>
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+    </script>
 </body>
 </html>
+```
+
+---
+
+### Key Features:
+1. **Tab Functionality**:
+   - Switch between **Performance Tracker** and **Order Remainder Calculator** using the navigation bar.
+   - The active tab is highlighted.
+
+2. **Full Calculator**:
+   - Inputs for **Total From Database** (shared across all packets).
+   - Inputs for **Complete Pallets** and **Individual Packaged Units** for each packet.
+   - Inputs for **upholstered**, **glued**, and **assembled** pieces for each packet.
+
+3. **Results Display**:
+   - Calculates and displays the remaining packets and steps for each packet.
+
+---
+
+### How to Use:
+1. Copy and paste this code into your existing file.
+2. Test the **tab functionality** and **calculator** to ensure everything works as expected.
+3. Deploy the updated code to GitHub Pages.
+
+Let me know if you need further adjustments! 😊
