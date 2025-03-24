@@ -605,7 +605,7 @@
             const remainingUpholsteredBratStanga = remainingPackets - individualPackagedPacket1 - upholsteredBratStanga;
             const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
             const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
-            const remainingAssembledRabatabilLada = upholsteredRabatabil - assembledRabatabilLada;
+            const remainingAssembledRabatabilLada = individualPackagedPacket1 - assembledRabatabilLada;
 
             // Calculate remaining steps for Packet 2
             const remainingUpholsteredBratDreapta = remainingPackets - individualPackagedPacket2 - upholsteredBratDreapta;
@@ -621,7 +621,7 @@
             const remainingUpholsteredLadaMobila = remainingPackets - individualPackagedPacket3 - upholsteredLadaMobila;
             const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
             const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
-            const remainingAssembledSezutLada = upholsteredSezutMobil - assembledSezutLada;
+            const remainingAssembledSezutLada = individualPackagedPacket3 - assembledSezutLada;
 
             // Display results
             const result = `
