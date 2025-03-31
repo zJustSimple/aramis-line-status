@@ -536,7 +536,7 @@
 		<div class="loader-container">
 			<div class="loader"></div>
 		</div>
-        <div class="page-content">
+		<div class="page-content">
 			<!-- Add the wave and gradient backgrounds -->
 			<div class="wave-background"></div>
 			<div class="wave-effect"></div>
@@ -994,16 +994,15 @@
 				// Recalculate with the new display mode
 				calculateRemainder();
 			}
-                // Loader script
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        document.querySelector('.loader-container').style.display = 'none';
-        document.querySelector('.page-content').style.display = 'block';
-    }, 3000); // 3 seconds
-});
-        </div>
-                
+			// Loader script
+			document.addEventListener('DOMContentLoaded', function() {
+				setTimeout(function() {
+					document.querySelector('.loader-container').style.display = 'none';
+					document.querySelector('.page-content').style.display = 'block';
+				}, 3000); // 3 seconds
+			});
 			</script>
+		</div> <!-- Close the page-content div -->
 	</body>
 
 </html>
