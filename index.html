@@ -6,243 +6,307 @@
     <title>Production Line Performance Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+/* Original styles from code.txt */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
 
-        /* Create the animated wave background */
-        .wave-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1e1e1e, #121212);
-            animation: gradientAnimation 15s ease infinite;
-            z-index: -1;
-        }
+/* Create the animated wave background */
+.wave-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e1e1e, #121212);
+    animation: gradientAnimation 15s ease infinite;
+    z-index: -1;
+}
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-        .wave-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/alphawaves.png') repeat-x;
-            animation: scrollWave 10s linear infinite;
-            z-index: -2;
-        }
+.wave-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/alphawaves.png') repeat-x;
+    animation: scrollWave 10s linear infinite;
+    z-index: -2;
+}
 
-        @keyframes scrollWave {
-            0% { background-position: 0 0; }
-            100% { background-position: 100% 0; }
-        }
+@keyframes scrollWave {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+}
 
-        .card {
-            flex: 1;
-            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin: 10px 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease-in-out forwards;
-        }
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
+h2, p {
+    margin: 0;
+}
 
-        .card:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+/* New and enhanced styles from paste.txt */
+.card {
+    flex: 1;
+    background: linear-gradient(145deg, #2a2a2a, #222222);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.3);
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-in-out forwards;
+    max-width: 800px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
 
-        h2, p {
-            margin: 0;
-        }
+.card:nth-child(3) {
+    animation-delay: 0.4s;
+}
 
-        .input-group {
-            margin: 10px 0;
-        }
+.input-group {
+    margin: 12px 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
 
-        .input-group input {
-            padding: 10px;
-            font-size: 16px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2c2c2c;
-            color: #ffffff;
-            width: 100%;
-            max-width: 300px;
-        }
+.input-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #ccc;
+    font-weight: 500;
+}
 
-        .result {
-            font-weight: bold;
-            margin: 10px 0;
-        }
+.input-group input {
+    padding: 12px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #333;
+    color: #ffffff;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-        .progress-bar {
-            width: 100%;
-            max-width: 300px;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-            position: relative;
-        }
+.input-group input:focus {
+    background-color: #3a3a3a;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(98, 0, 234, 0.2);
+}
 
-        .progress-fill {
-            height: 100%;
-            text-align: center;
-            line-height: 20px;
-            color: white;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #6200ea, #3700b3);
-            transition: width 0.3s ease-in-out;
-        }
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    margin: 18px 0;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(90deg, #6200ea, #3700b3);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    max-width: 250px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    align-self: center;
+}
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px 0;
-            cursor: pointer;
-            border: none;
-            background: linear-gradient(90deg, #6200ea, #3700b3);
-            color: white;
-            border-radius: 5px;
-            transition: background 0.3s ease-in-out;
-            width: 100%;
-            max-width: 200px;
-        }
+button:hover {
+    background: linear-gradient(90deg, #3700b3, #6200ea);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
 
-        button:hover {
-            background: linear-gradient(90deg, #3700b3, #6200ea);
-        }
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-        button:active {
-            transform: scale(0.98);
-        }
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
 
-        button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
+h2, h3 {
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 10px;
+}
 
-        #shift-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+h2:after, h3:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #6200ea, #03dac6);
+    border-radius: 3px;
+}
 
-        #shift-progress-bar {
-            width: 100%;
-            max-width: 300px;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+h3 {
+    margin-top: 30px;
+    color: #03dac6;
+}
 
-        #shift-progress-fill {
-            height: 100%;
-            text-align: center;
-            line-height: 20px;
-            color: white;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #03dac6, #018786);
-            transition: width 0.3s ease-in-out;
-        }
+.calculator-section {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin: 20px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        .stars {
-            font-size: 2em;
-            margin: 10px 0;
-        }
+.result {
+    background: rgba(3, 218, 198, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #03dac6;
+    font-weight: bold;
+    margin: 10px 0;
+}
 
-        .star {
-            color: gold;
-        }
+.result h3 {
+    color: #03dac6;
+    text-align: left;
+    padding-bottom: 0;
+    margin-top: 0;
+}
 
-        .progress-color {
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
+.result h3:after {
+    display: none;
+}
 
-        .expected-production {
-            font-size: 16px;
-            color: #03dac6;
-            font-weight: bold;
-        }
+.result p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
 
-        /* New styles for the navigation bar and tabs */
-        .navbar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+.result ol {
+    padding-left: 20px;
+}
 
-        .navbar button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 0 10px;
-            cursor: pointer;
-            border: none;
-            background: linear-gradient(90deg, #6200ea, #3700b3);
-            color: white;
-            border-radius: 5px;
-            transition: background 0.3s ease-in-out;
-        }
+.result li {
+    margin-bottom: 8px;
+}
 
-        .navbar button:hover {
-            background: linear-gradient(90deg, #3700b3, #6200ea);
-        }
+/* Original Progress bar styles with enhancements */
+.progress-bar {
+    width: 100%;
+    max-width: 300px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+}
 
-        .navbar button.active {
-            background: linear-gradient(90deg, #03dac6, #018786);
-        }
+.progress-fill {
+    height: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #6200ea, #3700b3);
+    transition: width 0.3s ease-in-out;
+}
 
-        .tab-content {
-            display: none;
-        }
+/* Keeping original shift progress styles */
+#shift-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .tab-content.active {
-            display: block;
-        }
+#shift-progress-bar {
+    width: 100%;
+    max-width: 300px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        /* Sliding switch styles */
+#shift-progress-fill {
+    height: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #03dac6, #018786);
+    transition: width 0.3s ease-in-out;
+}
+
+.stars {
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+.star {
+    color: gold;
+}
+
+.progress-color {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.expected-production {
+    font-size: 16px;
+    color: #03dac6;
+    font-weight: bold;
+}
+
+/* Switch styles from paste.txt */
 .switch-container {
+    margin: 30px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .switch {
@@ -250,7 +314,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
-    margin: 0 10px;
+    margin: 0 15px;
 }
 
 .switch input {
@@ -269,6 +333,7 @@
     background-color: #333;
     transition: .4s;
     border-radius: 34px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .slider:before {
@@ -281,6 +346,7 @@
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 input:checked + .slider {
@@ -293,8 +359,95 @@ input:checked + .slider:before {
 
 .switch-label {
     color: white;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 14px;
 }
+
+/* Navbar styles from original */
+.navbar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.navbar button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(90deg, #6200ea, #3700b3);
+    color: white;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+.navbar button:hover {
+    background: linear-gradient(90deg, #3700b3, #6200ea);
+}
+
+.navbar button.active {
+    background: linear-gradient(90deg, #03dac6, #018786);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Calculator grid from paste.txt */
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    width: 100%;
+}
+
+.calculator-grid .input-group {
+    margin: 8px 0;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .input-group input {
+        padding: 10px 12px;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    h3 {
+        font-size: 18px;
+    }
+    
+    .switch-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .switch {
+        margin: 10px 0;
+    }
+    
+    .switch-label {
+        margin: 5px 0;
+    }
+}
+
     </style>
 </head>
 <body>
