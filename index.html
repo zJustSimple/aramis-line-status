@@ -529,6 +529,36 @@
 		.page-content {
 			display: none;
 		}
+			/* Falling Stars Background */
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  filter: blur(1px);
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(-100px) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
 		</style>
 	</head>
 
@@ -994,8 +1024,40 @@
 				// Recalculate with the new display mode
 				calculateRemainder();
 			}
+				function createFallingStars() {
+  const container = document.createElement('div');
+  container.className = 'stars-container';
+  document.body.appendChild(container);
+  
+  // Create 50 stars (adjust number as needed)
+  for (let i = 0; i < 50; i++) {
+    setTimeout(() => {
+      const star = document.createElement('div');
+      star.className = 'star';
+      
+      // Random size between 1-3px
+      const size = Math.random() * 2 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      
+      // Random starting position
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      
+      // Random animation duration (3-8 seconds)
+      const duration = Math.random() * 5 + 3;
+      star.style.animationDuration = `${duration}s`;
+      
+      // Random delay (0-10 seconds)
+      star.style.animationDelay = `${Math.random() * 10}s`;
+      
+      container.appendChild(star);
+    }, i * 200); // Stagger creation
+  }
+}
 			// Loader script
 			document.addEventListener('DOMContentLoaded', function() {
+				createFallingStars(); // Add this line
 				setTimeout(function() {
 					document.querySelector('.loader-container').style.display = 'none';
 					document.querySelector('.page-content').style.display = 'block';
