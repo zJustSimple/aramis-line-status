@@ -236,6 +236,65 @@
         .tab-content.active {
             display: block;
         }
+
+        /* Sliding switch styles */
+.switch-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin: 0 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background: linear-gradient(90deg, #03dac6, #018786);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    color: white;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -406,6 +465,15 @@
             <!-- Buttons -->
             <button onclick="calculateRemainder()">Calculate</button>
             <button onclick="fillRandomValues()">Fill Random Values</button>
+            <!-- Display mode switch -->
+            <div class="switch-container">
+                <span class="switch-label">Standard View</span>
+                    <label class="switch">
+                    <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                <span class="slider"></span>
+            </label>
+    <span class="switch-label">Production Flow View</span>
+</div>
             <div class="result" id="calculator-result"></div>
         </div>
     </div>
@@ -557,105 +625,141 @@
 
         // Full calculator logic
         function calculateRemainder() {
-            // Total From Database (same for all packets)
-            const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
+    // Total From Database (same for all packets)
+    const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
 
-            // Complete Pallets (subtracted once from Total From Database)
-            const completePallets = parseFloat(document.getElementById('complete-pallets').value);
+    // Complete Pallets (subtracted once from Total From Database)
+    const completePallets = parseFloat(document.getElementById('complete-pallets').value);
 
-            // Validate inputs
-            if (isNaN(totalFromDatabase) || isNaN(completePallets)) {
-                document.getElementById('calculator-result').textContent = "Please enter valid numbers for Total From Database and Complete Pallets.";
-                return;
-            }
+    // Validate inputs
+    if (isNaN(totalFromDatabase) || isNaN(completePallets)) {
+        document.getElementById('calculator-result').textContent = "Please enter valid numbers for Total From Database and Complete Pallets.";
+        return;
+    }
 
-            // Calculate remaining packets after subtracting complete pallets
-            const remainingPackets = totalFromDatabase - completePallets;
+    // Calculate remaining packets after subtracting complete pallets
+    const remainingPackets = totalFromDatabase - completePallets;
 
-            // Packet 1
-            const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value);
-            const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value);
-            const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value);
-            const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value);
-            const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value);
-            const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value);
-            const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value);
+    // Packet 1
+    const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value) || 0;
+    const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value) || 0;
+    const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value) || 0;
+    const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value) || 0;
+    const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value) || 0;
+    const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value) || 0;
+    const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value) || 0;
 
-            // Packet 2
-            const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value);
-            const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value);
-            const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value);
-            const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value);
-            const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value);
-            const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value);
-            const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value);
+    // Packet 2
+    const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value) || 0;
+    const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value) || 0;
+    const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value) || 0;
+    const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value) || 0;
+    const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value) || 0;
+    const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value) || 0;
+    const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value) || 0;
 
-            // Packet 3
-            const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value);
-            const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value);
-            const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value);
-            const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value);
-            const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value);
-            const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value);
-            const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value);
+    // Packet 3
+    const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value) || 0;
+    const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value) || 0;
+    const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value) || 0;
+    const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value) || 0;
+    const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value) || 0;
+    const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value) || 0;
+    const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value) || 0;
 
-            // Calculate remaining steps for Packet 1
-            const remainingUpholsteredRabatabil = remainingPackets - individualPackagedPacket1 - upholsteredRabatabil;
-            const remainingUpholsteredLada = remainingPackets - individualPackagedPacket1 - upholsteredLada;
-            const remainingUpholsteredBratStanga = remainingPackets - individualPackagedPacket1 - upholsteredBratStanga;
-            const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
-            const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
-            const remainingAssembledRabatabilLada = individualPackagedPacket1 - assembledRabatabilLada;
+    // Calculate remaining steps for Packet 1
+    const remainingUpholsteredRabatabil = remainingPackets - individualPackagedPacket1 - upholsteredRabatabil;
+    const remainingUpholsteredLada = remainingPackets - individualPackagedPacket1 - upholsteredLada;
+    const remainingUpholsteredBratStanga = remainingPackets - individualPackagedPacket1 - upholsteredBratStanga;
+    const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
+    const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
+    const remainingAssembledRabatabilLada = individualPackagedPacket1 - assembledRabatabilLada;
 
-            // Calculate remaining steps for Packet 2
-            const remainingUpholsteredBratDreapta = remainingPackets - individualPackagedPacket2 - upholsteredBratDreapta;
-            const remainingUpholsteredSpatarMare = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMare;
-            const remainingUpholsteredSpatarMic = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMic;
-            const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
-            const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
-            const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
+    // Calculate remaining steps for Packet 2
+    const remainingUpholsteredBratDreapta = remainingPackets - individualPackagedPacket2 - upholsteredBratDreapta;
+    const remainingUpholsteredSpatarMare = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMare;
+    const remainingUpholsteredSpatarMic = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMic;
+    const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
+    const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
+    const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
 
-            // Calculate remaining steps for Packet 3
-            const remainingUpholsteredSezutFix = remainingPackets - individualPackagedPacket3 - upholsteredSezutFix;
-            const remainingUpholsteredSezutMobil = remainingPackets - individualPackagedPacket3 - upholsteredSezutMobil;
-            const remainingUpholsteredLadaMobila = remainingPackets - individualPackagedPacket3 - upholsteredLadaMobila;
-            const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
-            const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
-            const remainingAssembledSezutLada = individualPackagedPacket3 - assembledSezutLada;
+    // Calculate remaining steps for Packet 3
+    const remainingUpholsteredSezutFix = remainingPackets - individualPackagedPacket3 - upholsteredSezutFix;
+    const remainingUpholsteredSezutMobil = remainingPackets - individualPackagedPacket3 - upholsteredSezutMobil;
+    const remainingUpholsteredLadaMobila = remainingPackets - individualPackagedPacket3 - upholsteredLadaMobila;
+    const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
+    const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
+    const remainingAssembledSezutLada = individualPackagedPacket3 - assembledSezutLada;
 
-            // Display results
-            const result = `
-                <h3>Packet 1</h3>
-                <p>Remaining Packets: ${remainingPackets - individualPackagedPacket1}</p>
-                <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
-                <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
-                <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
-                <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
-                <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
-                <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
+    // Check if we should display the standard view or the production flow view
+    const isProductionFlowView = document.getElementById('display-mode-switch').checked;
 
-                <h3>Packet 2</h3>
-                <p>Remaining Packets: ${remainingPackets - individualPackagedPacket2}</p>
-                <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
-                <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
-                <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
-                <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
-                <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
-                <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
+    let result = '';
 
-                <h3>Packet 3</h3>
-                <p>Remaining Packets: ${remainingPackets - individualPackagedPacket3}</p>
-                <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
-                <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
-                <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
-                <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
-                <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
-                <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
-            `;
+    if (isProductionFlowView) {
+        // Production Flow View
+        result = `
+            <h3>Production Flow View</h3>
+            <ol>
+                <li>Aplicare TNT set 3 șezut: ${Math.round((remainingGluedSezutFix + remainingGluedSezutMobil + remainingGluedRabatabil) / 3)}</li>
+                <li>Adezivare sezut fix: ${remainingGluedSezutFix}</li>
+                <li>Adezivare set sezut/ lada mobila: ${remainingGluedSezutMobil}</li>
+                <li>Adezivare sezut Rabatabil: ${remainingGluedRabatabil}</li>
+                <li>Adezivare set 2 brate: ${Math.round((remainingGluedBratStanga + remainingGluedBratDreapta) / 2)}</li>
+                <li>Adezivare set 2 spatare: ${Math.round((remainingGluedSpatarMare + remainingGluedSpatarMic) / 2)}</li>
+                <li>Tapitare / Preducire sezut fix: ${remainingUpholsteredSezutFix}</li>
+                <li>Tapitare sezut mobil: ${remainingUpholsteredSezutMobil}</li>
+                <li>Tapitare sezut Rabatabil: ${remainingUpholsteredRabatabil}</li>
+                <li>Tapitare set 2 brate: ${Math.round((remainingUpholsteredBratStanga + remainingUpholsteredBratDreapta) / 2)}</li>
+                <li>Tapitare spatar mic: ${remainingUpholsteredSpatarMic}</li>
+                <li>Tapitare spatar mare: ${remainingUpholsteredSpatarMare}</li>
+                <li>Tapitare lada mobila: ${remainingUpholsteredLadaMobila}</li>
+                <li>Tapitare lada fixa: ${remainingUpholsteredLada}</li>
+                <li>Cuplare lada mobila/sezut mobil: ${remainingAssembledSezutLada}</li>
+                <li>Aplicare balamale/Cuplare sezut rabatabil/lada fixa: ${remainingAssembledRabatabilLada}</li>
+                <li>Tras set 3 huse perne Spătar: 0</li>
+                <li>Confectionare set filere cartoane: 0</li>
+                <li>Ambalare colet 1: ${remainingPackets - individualPackagedPacket1}</li>
+                <li>Ambalare colet 2: ${remainingPackets - individualPackagedPacket2}</li>
+                <li>Ambalare colet 3: ${remainingPackets - individualPackagedPacket3}</li>
+                <li>Aplicare coltare rigide si deservire robot: ${remainingPackets}</li>
+                <li>Aplicare ULL si transport produs finit: ${remainingPackets}</li>
+            </ol>
+        `;
+    } else {
+        // Standard View (original output format)
+        result = `
+            <h3>Packet 1</h3>
+            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket1}</p>
+            <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
+            <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
+            <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
+            <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
+            <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
+            <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
 
-            document.getElementById('calculator-result').innerHTML = result;
-        }
+            <h3>Packet 2</h3>
+            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket2}</p>
+            <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
+            <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
+            <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
+            <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
+            <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
+            <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
 
+            <h3>Packet 3</h3>
+            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket3}</p>
+            <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
+            <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
+            <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
+            <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
+            <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
+            <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
+        `;
+    }
+
+    document.getElementById('calculator-result').innerHTML = result;
+}
         // Fill random values for testing
         function fillRandomValues() {
             const randomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -703,6 +807,11 @@
             document.getElementById(tabName).classList.add('active');
             document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
         }
+        // Toggle between display modes
+function toggleDisplayMode() {
+    // Recalculate with the new display mode
+    calculateRemainder();
+}
     </script>
 </body>
 </html>
