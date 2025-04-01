@@ -620,86 +620,186 @@ input:checked + .slider:before {
 			<div id="calculator" class="tab-content">
 				<div class="card">
 					<h2>Order Remainder Calculator</h2>
-					<!-- Total From Database (same for all packets) -->
-					<div class="input-group">
-						<label>Total From Database: <input type="number" id="total-from-database" placeholder="Enter total"></label>
+					
+					<!-- Couch Type Switch -->
+					<div class="switch-container">
+						<span class="switch-label">Barslov</span>
+						<label class="switch">
+							<input type="checkbox" id="couch-type-switch" onchange="toggleCouchType()">
+							<span class="slider"></span>
+						</label>
+						<span class="switch-label">Friheten</span>
 					</div>
-					<!-- Complete Pallets (subtracted once from Total From Database) -->
-					<div class="input-group">
-						<label>Complete Pallets: <input type="number" id="complete-pallets" placeholder="Enter complete pallets"></label>
+					
+					<!-- Barslov Calculator (default view) -->
+					<div id="barslov-calculator">
+						<div class="input-group">
+							<label>Total From Database (pallets): <input type="number" id="total-from-database" placeholder="Enter pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Complete Pallets: <input type="number" id="complete-pallets" placeholder="Enter complete pallets"></label>
+						</div>
+						
+						<!-- Packet 1 -->
+						<h3>Packet 1</h3>
+						<div class="input-group">
+							<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
+						</div>
+						<div class="input-group">
+							<label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
+						</div>
+						
+						<!-- Packet 2 -->
+						<h3>Packet 2</h3>
+						<div class="input-group">
+							<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
+						</div>
+						
+						<!-- Packet 3 -->
+						<h3>Packet 3</h3>
+						<div class="input-group">
+							<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
+						</div>
+						<div class="input-group">
+							<label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
+						</div>
 					</div>
-					<!-- Packet 1 -->
-					<h3>Packet 1</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
+					
+					<!-- Friheten Calculator (hidden by default) -->
+					<div id="friheten-calculator" style="display: none;">
+						<!-- Line 1 (Chslong) -->
+						<h3>Chslong Line (Packet 1)</h3>
+						<div class="input-group">
+							<label>Database Pallets: <input type="number" id="friheten-db-line1" placeholder="Enter pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Complete Pallets (2 packets per pallet): <input type="number" id="friheten-pallets-line1" placeholder="Enter complete pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Packaged Packets: <input type="number" id="friheten-packaged-line1" placeholder="Enter packaged packets"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Rabatabil: <input type="number" id="friheten-upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Lada Fixă: <input type="number" id="friheten-upholstered-lada" placeholder="Enter upholstered Lada Fixă"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Brat Mic: <input type="number" id="friheten-upholstered-brat-mic" placeholder="Enter upholstered Brat Mic"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Rabatabil: <input type="number" id="friheten-glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Brat Mic: <input type="number" id="friheten-glued-brat-mic" placeholder="Enter glued Brat Mic"></label>
+						</div>
+						<div class="input-group">
+							<label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="friheten-assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
+						</div>
+						
+						<!-- Line 2 (Backrest) -->
+						<h3>Backrest Line (Packet 2)</h3>
+						<div class="input-group">
+							<label>Database Pallets: <input type="number" id="friheten-db-line2" placeholder="Enter pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Complete Pallets (3 packets per pallet): <input type="number" id="friheten-pallets-line2" placeholder="Enter complete pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Packaged Packets: <input type="number" id="friheten-packaged-line2" placeholder="Enter packaged packets"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Spătar: <input type="number" id="friheten-upholstered-spatar" placeholder="Enter upholstered Spătar"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Brat Mare: <input type="number" id="friheten-upholstered-brat-mare" placeholder="Enter upholstered Brat Mare"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Spătar: <input type="number" id="friheten-glued-spatar" placeholder="Enter glued Spătar"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Brat Mare: <input type="number" id="friheten-glued-brat-mare" placeholder="Enter glued Brat Mare"></label>
+						</div>
+						
+						<!-- Line 3 (Seat) -->
+						<h3>Seat Line (Packet 3)</h3>
+						<div class="input-group">
+							<label>Database Pallets: <input type="number" id="friheten-db-line3" placeholder="Enter pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Complete Pallets (2 packets per pallet): <input type="number" id="friheten-pallets-line3" placeholder="Enter complete pallets"></label>
+						</div>
+						<div class="input-group">
+							<label>Packaged Packets: <input type="number" id="friheten-packaged-line3" placeholder="Enter packaged packets"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Șezut Fix: <input type="number" id="friheten-upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Șezut Mobil: <input type="number" id="friheten-upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
+						</div>
+						<div class="input-group">
+							<label>Upholstered Lada Mobilă: <input type="number" id="friheten-upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Șezut Fix: <input type="number" id="friheten-glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
+						</div>
+						<div class="input-group">
+							<label>Glued Șezut Mobil: <input type="number" id="friheten-glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
+						</div>
+						<div class="input-group">
+							<label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="friheten-assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
+						</div>
 					</div>
-					<div class="input-group">
-						<label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
-					</div>
-					<div class="input-group">
-						<label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
-					</div>
-					<!-- Packet 2 -->
-					<h3>Packet 2</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
-					</div>
-					<!-- Packet 3 -->
-					<h3>Packet 3</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
-					</div>
-					<div class="input-group">
-						<label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
-					</div>
-					<!-- Buttons -->
-					<button onclick="calculateRemainder()">Calculate</button>
-					<button onclick="fillRandomValues()">Fill Random Values</button>
+					
 					<!-- Display mode switch -->
 					<div class="switch-container">
 						<span class="switch-label">Standard View</span>
@@ -709,6 +809,11 @@ input:checked + .slider:before {
 						</label>
 						<span class="switch-label">Production Flow View</span>
 					</div>
+					
+					<!-- Buttons -->
+					<button onclick="calculateRemainder()">Calculate</button>
+					<button onclick="fillRandomValues()">Fill Random Values</button>
+					
 					<div class="result" id="calculator-result"></div>
 				</div>
 			</div>
@@ -834,9 +939,27 @@ input:checked + .slider:before {
 			document.getElementById('target-line3').addEventListener('input', () => {
 				document.getElementById('check-line3').disabled = false;
 			});
-			// Full calculator logic
+
+			// Toggle between couch types
+			function toggleCouchType() {
+				const isFriheten = document.getElementById('couch-type-switch').checked;
+				document.getElementById('barslov-calculator').style.display = isFriheten ? 'none' : 'block';
+				document.getElementById('friheten-calculator').style.display = isFriheten ? 'block' : 'none';
+			}
+
+			// Modified calculateRemainder function
 			function calculateRemainder() {
-				// Total From Database (same for all packets)
+				const isFriheten = document.getElementById('couch-type-switch').checked;
+				
+				if (isFriheten) {
+					calculateFrihetenRemainder();
+				} else {
+					calculateBarslovRemainder();
+				}
+			}
+
+			function calculateBarslovRemainder() {
+				// Total From Database (in pallets)
 				const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
 				// Complete Pallets (subtracted once from Total From Database)
 				const completePallets = parseFloat(document.getElementById('complete-pallets').value);
@@ -845,8 +968,8 @@ input:checked + .slider:before {
 					document.getElementById('calculator-result').textContent = "Please enter valid numbers for Total From Database and Complete Pallets.";
 					return;
 				}
-				// Calculate remaining packets after subtracting complete pallets
-				const remainingPackets = totalFromDatabase - completePallets;
+				// Calculate remaining packets after subtracting complete pallets (assuming 1 packet per pallet for Barslov)
+				const remainingPackets = (totalFromDatabase - completePallets) * 1;
 				// Packet 1
 				const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value) || 0;
 				const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value) || 0;
@@ -958,37 +1081,205 @@ input:checked + .slider:before {
 				}
 				document.getElementById('calculator-result').innerHTML = result;
 			}
-			// Fill random values for testing
+
+			function calculateFrihetenRemainder() {
+				// Get values for Line 1 (Chslong)
+				const dbLine1 = parseFloat(document.getElementById('friheten-db-line1').value);
+				const palletsLine1 = parseFloat(document.getElementById('friheten-pallets-line1').value);
+				const packagedLine1 = parseFloat(document.getElementById('friheten-packaged-line1').value);
+				const upholsteredRabatabil = parseFloat(document.getElementById('friheten-upholstered-rabatabil').value) || 0;
+				const upholsteredLada = parseFloat(document.getElementById('friheten-upholstered-lada').value) || 0;
+				const upholsteredBratMic = parseFloat(document.getElementById('friheten-upholstered-brat-mic').value) || 0;
+				const gluedRabatabil = parseFloat(document.getElementById('friheten-glued-rabatabil').value) || 0;
+				const gluedBratMic = parseFloat(document.getElementById('friheten-glued-brat-mic').value) || 0;
+				const assembledRabatabilLada = parseFloat(document.getElementById('friheten-assembled-rabatabil-lada').value) || 0;
+				
+				// Get values for Line 2 (Backrest)
+				const dbLine2 = parseFloat(document.getElementById('friheten-db-line2').value);
+				const palletsLine2 = parseFloat(document.getElementById('friheten-pallets-line2').value);
+				const packagedLine2 = parseFloat(document.getElementById('friheten-packaged-line2').value);
+				const upholsteredSpatar = parseFloat(document.getElementById('friheten-upholstered-spatar').value) || 0;
+				const upholsteredBratMare = parseFloat(document.getElementById('friheten-upholstered-brat-mare').value) || 0;
+				const gluedSpatar = parseFloat(document.getElementById('friheten-glued-spatar').value) || 0;
+				const gluedBratMare = parseFloat(document.getElementById('friheten-glued-brat-mare').value) || 0;
+				
+				// Get values for Line 3 (Seat)
+				const dbLine3 = parseFloat(document.getElementById('friheten-db-line3').value);
+				const palletsLine3 = parseFloat(document.getElementById('friheten-pallets-line3').value);
+				const packagedLine3 = parseFloat(document.getElementById('friheten-packaged-line3').value);
+				const upholsteredSezutFix = parseFloat(document.getElementById('friheten-upholstered-sezut-fix').value) || 0;
+				const upholsteredSezutMobil = parseFloat(document.getElementById('friheten-upholstered-sezut-mobil').value) || 0;
+				const upholsteredLadaMobila = parseFloat(document.getElementById('friheten-upholstered-lada-mobila').value) || 0;
+				const gluedSezutFix = parseFloat(document.getElementById('friheten-glued-sezut-fix').value) || 0;
+				const gluedSezutMobil = parseFloat(document.getElementById('friheten-glued-sezut-mobil').value) || 0;
+				const assembledSezutLada = parseFloat(document.getElementById('friheten-assembled-sezut-lada').value) || 0;
+				
+				// Validate inputs
+				if (isNaN(dbLine1) || isNaN(dbLine2) || isNaN(dbLine3)) {
+					document.getElementById('calculator-result').textContent = "Please enter valid numbers for all Database Pallets fields.";
+					return;
+				}
+				
+				// Calculate remaining packets for each line (2 packets per pallet for lines 1 and 3, 3 for line 2)
+				const remainingLine1 = (dbLine1 * 2) - (palletsLine1 * 2) - packagedLine1;
+				const remainingLine2 = (dbLine2 * 3) - (palletsLine2 * 3) - packagedLine2;
+				const remainingLine3 = (dbLine3 * 2) - (palletsLine3 * 2) - packagedLine3;
+				
+				// Calculate remaining steps for each line
+				// Line 1 calculations
+				const remainingUpholsteredRabatabil = remainingLine1 - upholsteredRabatabil;
+				const remainingUpholsteredLada = remainingLine1 - upholsteredLada;
+				const remainingUpholsteredBratMic = remainingLine1 - upholsteredBratMic;
+				const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
+				const remainingGluedBratMic = upholsteredBratMic - gluedBratMic;
+				const remainingAssembledRabatabilLada = packagedLine1 - assembledRabatabilLada;
+				
+				// Line 2 calculations
+				const remainingUpholsteredSpatar = remainingLine2 - upholsteredSpatar;
+				const remainingUpholsteredBratMare = remainingLine2 - upholsteredBratMare;
+				const remainingGluedSpatar = upholsteredSpatar - gluedSpatar;
+				const remainingGluedBratMare = upholsteredBratMare - gluedBratMare;
+				
+				// Line 3 calculations
+				const remainingUpholsteredSezutFix = remainingLine3 - upholsteredSezutFix;
+				const remainingUpholsteredSezutMobil = remainingLine3 - upholsteredSezutMobil;
+				const remainingUpholsteredLadaMobila = remainingLine3 - upholsteredLadaMobila;
+				const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
+				const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
+				const remainingAssembledSezutLada = packagedLine3 - assembledSezutLada;
+				
+				// Display results based on view mode
+				const isProductionFlowView = document.getElementById('display-mode-switch').checked;
+				let result = '';
+				
+				if (isProductionFlowView) {
+					// Production Flow View for Friheten
+					result = `
+						<h3>Production Flow View - Friheten</h3>
+						<ol>
+							<li>Aplicare TNT set 3 șezut: ${Math.round((remainingGluedSezutFix + remainingGluedSezutMobil + remainingGluedRabatabil) / 3)}</li>
+							<li>Adezivare sezut fix: ${remainingGluedSezutFix}</li>
+							<li>Adezivare sezut mobil: ${remainingGluedSezutMobil}</li>
+							<li>Adezivare sezut Rabatabil: ${remainingGluedRabatabil}</li>
+							<li>Adezivare brat mic: ${remainingGluedBratMic}</li>
+							<li>Adezivare brat mare: ${remainingGluedBratMare}</li>
+							<li>Adezivare spatar: ${remainingGluedSpatar}</li>
+							<li>Tapitare sezut fix: ${remainingUpholsteredSezutFix}</li>
+							<li>Tapitare sezut mobil: ${remainingUpholsteredSezutMobil}</li>
+							<li>Tapitare sezut Rabatabil: ${remainingUpholsteredRabatabil}</li>
+							<li>Tapitare brat mic: ${remainingUpholsteredBratMic}</li>
+							<li>Tapitare brat mare: ${remainingUpholsteredBratMare}</li>
+							<li>Tapitare spatar: ${remainingUpholsteredSpatar}</li>
+							<li>Tapitare lada mobila: ${remainingUpholsteredLadaMobila}</li>
+							<li>Tapitare lada fixa: ${remainingUpholsteredLada}</li>
+							<li>Cuplare lada mobila/sezut mobil: ${remainingAssembledSezutLada}</li>
+							<li>Aplicare balamale/Cuplare sezut rabatabil/lada fixa: ${remainingAssembledRabatabilLada}</li>
+							<li>Ambalare colet 1: ${remainingLine1}</li>
+							<li>Ambalare colet 2: ${remainingLine2}</li>
+							<li>Ambalare colet 3: ${remainingLine3}</li>
+						</ol>
+					`;
+				} else {
+					// Standard View for Friheten
+					result = `
+						<h3>Chslong Line (Packet 1)</h3>
+						<p>Remaining Packets: ${remainingLine1}</p>
+						<p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
+						<p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
+						<p>Remaining Upholstered Brat Mic: ${remainingUpholsteredBratMic}</p>
+						<p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
+						<p>Remaining Glued Brat Mic: ${remainingGluedBratMic}</p>
+						<p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
+
+						<h3>Backrest Line (Packet 2)</h3>
+						<p>Remaining Packets: ${remainingLine2}</p>
+						<p>Remaining Upholstered Spătar: ${remainingUpholsteredSpatar}</p>
+						<p>Remaining Upholstered Brat Mare: ${remainingUpholsteredBratMare}</p>
+						<p>Remaining Glued Spătar: ${remainingGluedSpatar}</p>
+						<p>Remaining Glued Brat Mare: ${remainingGluedBratMare}</p>
+
+						<h3>Seat Line (Packet 3)</h3>
+						<p>Remaining Packets: ${remainingLine3}</p>
+						<p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
+						<p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
+						<p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
+						<p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
+						<p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
+						<p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
+					`;
+				}
+				
+				document.getElementById('calculator-result').innerHTML = result;
+			}
+
+			// Update fillRandomValues function
 			function fillRandomValues() {
 				const randomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-				// Total From Database and Complete Pallets
-				document.getElementById('total-from-database').value = randomValue(100, 200);
-				document.getElementById('complete-pallets').value = randomValue(10, 50);
-				// Packet 1
-				document.getElementById('individual-packaged-packet1').value = randomValue(10, 50);
-				document.getElementById('upholstered-rabatabil').value = randomValue(10, 50);
-				document.getElementById('upholstered-lada').value = randomValue(10, 50);
-				document.getElementById('upholstered-brat-stanga').value = randomValue(10, 50);
-				document.getElementById('glued-rabatabil').value = randomValue(10, 50);
-				document.getElementById('glued-brat-stanga').value = randomValue(10, 50);
-				document.getElementById('assembled-rabatabil-lada').value = randomValue(10, 50);
-				// Packet 2
-				document.getElementById('individual-packaged-packet2').value = randomValue(10, 50);
-				document.getElementById('upholstered-brat-dreapta').value = randomValue(10, 50);
-				document.getElementById('upholstered-spatar-mare').value = randomValue(10, 50);
-				document.getElementById('upholstered-spatar-mic').value = randomValue(10, 50);
-				document.getElementById('glued-brat-dreapta').value = randomValue(10, 50);
-				document.getElementById('glued-spatar-mare').value = randomValue(10, 50);
-				document.getElementById('glued-spatar-mic').value = randomValue(10, 50);
-				// Packet 3
-				document.getElementById('individual-packaged-packet3').value = randomValue(10, 50);
-				document.getElementById('upholstered-sezut-fix').value = randomValue(10, 50);
-				document.getElementById('upholstered-sezut-mobil').value = randomValue(10, 50);
-				document.getElementById('upholstered-lada-mobila').value = randomValue(10, 50);
-				document.getElementById('glued-sezut-fix').value = randomValue(10, 50);
-				document.getElementById('glued-sezut-mobil').value = randomValue(10, 50);
-				document.getElementById('assembled-sezut-lada').value = randomValue(10, 50);
+				const isFriheten = document.getElementById('couch-type-switch').checked;
+				
+				if (isFriheten) {
+					// Fill random values for Friheten
+					// Line 1
+					document.getElementById('friheten-db-line1').value = randomValue(50, 100);
+					document.getElementById('friheten-pallets-line1').value = randomValue(10, 30);
+					document.getElementById('friheten-packaged-line1').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-rabatabil').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-lada').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-brat-mic').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-rabatabil').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-brat-mic').value = randomValue(5, 20);
+					document.getElementById('friheten-assembled-rabatabil-lada').value = randomValue(5, 20);
+					
+					// Line 2
+					document.getElementById('friheten-db-line2').value = randomValue(50, 100);
+					document.getElementById('friheten-pallets-line2').value = randomValue(10, 30);
+					document.getElementById('friheten-packaged-line2').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-spatar').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-brat-mare').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-spatar').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-brat-mare').value = randomValue(5, 20);
+					
+					// Line 3
+					document.getElementById('friheten-db-line3').value = randomValue(50, 100);
+					document.getElementById('friheten-pallets-line3').value = randomValue(10, 30);
+					document.getElementById('friheten-packaged-line3').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-sezut-fix').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-sezut-mobil').value = randomValue(5, 20);
+					document.getElementById('friheten-upholstered-lada-mobila').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-sezut-fix').value = randomValue(5, 20);
+					document.getElementById('friheten-glued-sezut-mobil').value = randomValue(5, 20);
+					document.getElementById('friheten-assembled-sezut-lada').value = randomValue(5, 20);
+				} else {
+					// Fill random values for Barslov
+					document.getElementById('total-from-database').value = randomValue(100, 200);
+					document.getElementById('complete-pallets').value = randomValue(10, 50);
+					// Packet 1
+					document.getElementById('individual-packaged-packet1').value = randomValue(10, 50);
+					document.getElementById('upholstered-rabatabil').value = randomValue(10, 50);
+					document.getElementById('upholstered-lada').value = randomValue(10, 50);
+					document.getElementById('upholstered-brat-stanga').value = randomValue(10, 50);
+					document.getElementById('glued-rabatabil').value = randomValue(10, 50);
+					document.getElementById('glued-brat-stanga').value = randomValue(10, 50);
+					document.getElementById('assembled-rabatabil-lada').value = randomValue(10, 50);
+					// Packet 2
+					document.getElementById('individual-packaged-packet2').value = randomValue(10, 50);
+					document.getElementById('upholstered-brat-dreapta').value = randomValue(10, 50);
+					document.getElementById('upholstered-spatar-mare').value = randomValue(10, 50);
+					document.getElementById('upholstered-spatar-mic').value = randomValue(10, 50);
+					document.getElementById('glued-brat-dreapta').value = randomValue(10, 50);
+					document.getElementById('glued-spatar-mare').value = randomValue(10, 50);
+					document.getElementById('glued-spatar-mic').value = randomValue(10, 50);
+					// Packet 3
+					document.getElementById('individual-packaged-packet3').value = randomValue(10, 50);
+					document.getElementById('upholstered-sezut-fix').value = randomValue(10, 50);
+					document.getElementById('upholstered-sezut-mobil').value = randomValue(10, 50);
+					document.getElementById('upholstered-lada-mobila').value = randomValue(10, 50);
+					document.getElementById('glued-sezut-fix').value = randomValue(10, 50);
+					document.getElementById('glued-sezut-mobil').value = randomValue(10, 50);
+					document.getElementById('assembled-sezut-lada').value = randomValue(10, 50);
+				}
 			}
+
 			// Tab navigation logic
 			function showTab(tabName) {
 				const tabs = document.querySelectorAll('.tab-content');
@@ -998,42 +1289,45 @@ input:checked + .slider:before {
 				document.getElementById(tabName).classList.add('active');
 				document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
 			}
+
 			// Toggle between display modes
 			function toggleDisplayMode() {
 				// Recalculate with the new display mode
 				calculateRemainder();
 			}
-				function createFallingStars() {
-  const container = document.createElement('div');
-  container.className = 'stars-container';
-  document.body.appendChild(container);
-  
-  // Create 50 stars (adjust number as needed)
-  for (let i = 0; i < 50; i++) {
-    setTimeout(() => {
-      const star = document.createElement('div');
-      star.className = 'star';
-      
-      // Random size between 1-3px
-      const size = Math.random() * 2 + 1;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      
-      // Random starting position
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.top = `${Math.random() * 100}%`;
-      
-      // Random animation duration (3-8 seconds)
-      const duration = Math.random() * 5 + 3;
-      star.style.animationDuration = `${duration}s`;
-      
-      // Random delay (0-10 seconds)
-      star.style.animationDelay = `${Math.random() * 10}s`;
-      
-      container.appendChild(star);
-    }, i * 200); // Stagger creation
-  }
-}
+
+			function createFallingStars() {
+				const container = document.createElement('div');
+				container.className = 'stars-container';
+				document.body.appendChild(container);
+				
+				// Create 50 stars (adjust number as needed)
+				for (let i = 0; i < 50; i++) {
+					setTimeout(() => {
+						const star = document.createElement('div');
+						star.className = 'star';
+						
+						// Random size between 1-3px
+						const size = Math.random() * 2 + 1;
+						star.style.width = `${size}px`;
+						star.style.height = `${size}px`;
+						
+						// Random starting position
+						star.style.left = `${Math.random() * 100}%`;
+						star.style.top = `${Math.random() * 100}%`;
+						
+						// Random animation duration (3-8 seconds)
+						const duration = Math.random() * 5 + 3;
+						star.style.animationDuration = `${duration}s`;
+						
+						// Random delay (0-10 seconds)
+						star.style.animationDelay = `${Math.random() * 10}s`;
+						
+						container.appendChild(star);
+					}, i * 200); // Stagger creation
+				}
+			}
+
 			// Loader script
 			document.addEventListener('DOMContentLoaded', function() {
 				createFallingStars(); // Add this line
@@ -1045,5 +1339,4 @@ input:checked + .slider:before {
 			</script>
 		</div> <!-- Close the page-content div -->
 	</body>
-
 </html>
