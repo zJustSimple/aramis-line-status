@@ -1,1049 +1,1237 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Production Line Performance Tracker</title>
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-		<style>
-		/* Original styles from code.txt */
-/* Base Styles */
-body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  padding: 20px;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e, #121212);
-}
-
-/* Background Elements */
-.wave-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e, #121212);
-  animation: gradientAnimation 15s ease infinite;
-  z-index: -2;
-}
-
-.wave-effect {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: url('https://www.transparenttextures.com/patterns/alphawaves.png') repeat-x;
-  animation: scrollWave 10s linear infinite;
-  z-index: -3;
-}
-
-.stars-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  pointer-events: none;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.star {
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  filter: blur(1px);
-  animation: fall linear infinite;
-}
-
-/* Animations */
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes scrollWave {
-  0% { background-position: 0 0; }
-  100% { background-position: 100% 0; }
-}
-
-@keyframes fall {
-  from {
-    transform: translateY(-100px) translateX(0) rotate(0deg);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(100vh) translateX(100px) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Card Styles */
-.card {
-  flex: 1;
-  background: linear-gradient(145deg, #2a2a2a, #222222);
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.3);
-  margin: 15px auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-in-out forwards;
-  max-width: 800px;
-  width: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.4s; }
-
-/* Form Elements */
-.input-group {
-  margin: 12px 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.input-group label {
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #ccc;
-  font-weight: 500;
-}
-
-.input-group input {
-  padding: 12px 16px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #333;
-  color: #ffffff;
-  width: 100%;
-  max-width: 100%;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-}
-
-.input-group input:focus {
-  background-color: #3a3a3a;
-  outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(98, 0, 234, 0.2);
-}
-
-/* Calculator Grid */
-.calculator-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .calculator-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Buttons */
-button {
-  padding: 12px 24px;
-  font-size: 16px;
-  margin: 18px 0;
-  cursor: pointer;
-  border: none;
-  background: linear-gradient(90deg, #6200ea, #3700b3);
-  color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease-in-out;
-  width: 100%;
-  max-width: 250px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  align-self: center;
-}
-
-button:hover {
-  background: linear-gradient(90deg, #3700b3, #6200ea);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-/* Typography */
-h2, h3 {
-  color: #fff;
-  margin-bottom: 20px;
-  text-align: center;
-  position: relative;
-  padding-bottom: 10px;
-}
-
-h2:after, h3:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 3px;
-  background: linear-gradient(90deg, #6200ea, #03dac6);
-  border-radius: 3px;
-}
-
-h3 {
-  margin-top: 30px;
-  color: #03dac6;
-}
-
-/* Results */
-.result {
-  background: rgba(3, 218, 198, 0.1);
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-left: 4px solid #03dac6;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-.result h3 {
-  color: #03dac6;
-  text-align: left;
-  padding-bottom: 0;
-  margin-top: 0;
-}
-
-.result h3:after {
-  display: none;
-}
-
-.result p {
-  margin: 8px 0;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.result ol {
-  padding-left: 20px;
-}
-
-.result li {
-  margin-bottom: 8px;
-}
-
-/* Progress Bars */
-.progress-bar {
-  width: 100%;
-  max-width: 300px;
-  height: 20px;
-  background-color: #333;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
-  position: relative;
-}
-
-.progress-fill {
-  height: 100%;
-  text-align: center;
-  line-height: 20px;
-  color: white;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #6200ea, #3700b3);
-  transition: width 0.3s ease-in-out;
-}
-
-#shift-progress-bar {
-  width: 100%;
-  max-width: 300px;
-  height: 20px;
-  background-color: #333;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#shift-progress-fill {
-  height: 100%;
-  text-align: center;
-  line-height: 20px;
-  color: white;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #03dac6, #018786);
-  transition: width 0.3s ease-in-out;
-}
-
-/* Stars Rating */
-.stars {
-  font-size: 2em;
-  margin: 10px 0;
-}
-
-.star {
-  color: gold;
-}
-
-.progress-color {
-  color: white;
-  font-weight: bold;
-  text-align: center;
-}
-
-.expected-production {
-  font-size: 16px;
-  color: #03dac6;
-  font-weight: bold;
-}
-
-/* Switch Styles */
-.switch-container {
-  margin: 30px 0;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-  margin: 0 15px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #333;
-  transition: .4s;
-  border-radius: 34px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-input:checked + .slider {
-  background: linear-gradient(90deg, #03dac6, #018786);
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.switch-label {
-  color: white;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.navbar button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin: 0 10px;
-  cursor: pointer;
-  border: none;
-  background: linear-gradient(90deg, #6200ea, #3700b3);
-  color: white;
-  border-radius: 5px;
-  transition: background 0.3s ease-in-out;
-}
-
-.navbar button:hover {
-  background: linear-gradient(90deg, #3700b3, #6200ea);
-}
-
-.navbar button.active {
-  background: linear-gradient(90deg, #03dac6, #018786);
-}
-
-/* Tabs */
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-/* Loader */
-.loader-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-  z-index: 9999;
-}
-
-.loader {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, transparent, transparent 40%, #e5f403);
-  animation: animate 2s linear infinite;
-}
-
-@keyframes animate {
-  0% {
-    transform: rotate(0deg);
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-    filter: hue-rotate(360deg);
-  }
-}
-
-.loader::before {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  right: 6px;
-  bottom: 6px;
-  background: #000;
-  border-radius: 50%;
-  z-index: 1000;
-}
-
-.loader::after {
-  content: '';
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  background: #000;
-  background: linear-gradient(45deg, transparent, transparent 40%, #e5f403);
-  border-radius: 50%;
-  z-index: 1;
-  filter: blur(30px);
-}
-
-.page-content {
-  display: none;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
-  .card {
-    padding: 15px;
-    margin: 10px 0;
-  }
-
-  .input-group input {
-    padding: 10px 12px;
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  h3 {
-    font-size: 18px;
-  }
-
-  .switch-container {
-    flex-direction: column;
-    padding: 15px;
-  }
-
-  .switch {
-    margin: 10px 0;
-  }
-
-  .switch-label {
-    margin: 5px 0;
-  }
-  
-  .calculator-grid {
-    grid-template-columns: 1fr;
-  }
-}
-		</style>
-	</head>
-
-	<body>
-		<div class="loader-container">
-			<div class="loader"></div>
-		</div>
-		<div class="page-content">
-			<!-- Add the wave and gradient backgrounds -->
-			<div class="wave-background"></div>
-			<div class="wave-effect"></div>
-			<!-- Navigation Bar -->
-			<div class="navbar">
-				<button onclick="showTab('performance')" class="active">Performance Tracker</button>
-				<button onclick="showTab('calculator')">Order Remainder Calculator</button>
-			</div>
-			<!-- Performance Tracker Tab -->
-			<div id="performance" class="tab-content active">
-				<div id="shift-info">
-					<h1>Production Line Performance Tracker</h1>
-					<p>Current Shift: <span id="current-shift">Calculating...</span></p>
-					<div id="shift-progress-bar">
-						<div id="shift-progress-fill">0%</div>
-					</div>
-				</div>
-				<div class="card">
-					<h2>Chslong Line</h2>
-					<div class="input-group">
-						<label>Target Per Day: <input type="number" id="target-line1" placeholder="Enter target"></label>
-					</div>
-					<div class="input-group">
-						<label>Current Output: <input type="number" id="current-line1" placeholder="Enter current output"></label>
-					</div>
-					<div class="result" id="result-line1"></div>
-					<div class="progress-bar">
-						<div class="progress-fill" id="progress-line1"></div>
-					</div>
-					<button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
-					<div id="stars-line1" class="stars"></div>
-					<div id="performance-line1" class="progress-color"></div>
-					<div id="expected-line1" class="expected-production"></div>
-				</div>
-				<div class="card">
-					<h2>Backrest Line</h2>
-					<div class="input-group">
-						<label>Target Per Day: <input type="number" id="target-line2" placeholder="Enter target"></label>
-					</div>
-					<div class="input-group">
-						<label>Current Output: <input type="number" id="current-line2" placeholder="Enter current output"></label>
-					</div>
-					<div class="result" id="result-line2"></div>
-					<div class="progress-bar">
-						<div class="progress-fill" id="progress-line2"></div>
-					</div>
-					<button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
-					<div id="stars-line2" class="stars"></div>
-					<div id="performance-line2" class="progress-color"></div>
-					<div id="expected-line2" class="expected-production"></div>
-				</div>
-				<div class="card">
-					<h2>Seat Line</h2>
-					<div class="input-group">
-						<label>Target Per Day: <input type="number" id="target-line3" placeholder="Enter target"></label>
-					</div>
-					<div class="input-group">
-						<label>Current Output: <input type="number" id="current-line3" placeholder="Enter current output"></label>
-					</div>
-					<div class="result" id="result-line3"></div>
-					<div class="progress-bar">
-						<div class="progress-fill" id="progress-line3"></div>
-					</div>
-					<button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
-					<div id="stars-line3" class="stars"></div>
-					<div id="performance-line3" class="progress-color"></div>
-					<div id="expected-line3" class="expected-production"></div>
-				</div>
-				<button id="check-all" onclick="checkAllPerformance()">Check All</button>
-			</div>
-			<!-- Order Remainder Calculator Tab -->
-			<div id="calculator" class="tab-content">
-				<div class="card">
-					<h2>Order Remainder Calculator</h2>
-					<!-- Total From Database (same for all packets) -->
-					<div class="input-group">
-						<label>Total From Database: <input type="number" id="total-from-database" placeholder="Enter total"></label>
-					</div>
-					<!-- Complete Pallets (subtracted once from Total From Database) -->
-					<div class="input-group">
-						<label>Complete Pallets: <input type="number" id="complete-pallets" placeholder="Enter complete pallets"></label>
-					</div>
-					<!-- Packet 1 -->
-					<h3>Packet 1</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
-					</div>
-					<div class="input-group">
-						<label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
-					</div>
-					<!-- Packet 2 -->
-					<h3>Packet 2</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
-					</div>
-					<!-- Packet 3 -->
-					<h3>Packet 3</h3>
-					<div class="input-group">
-						<label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
-					</div>
-					<div class="input-group">
-						<label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
-					</div>
-					<div class="input-group">
-						<label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
-					</div>
-					<div class="input-group">
-						<label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
-					</div>
-					<!-- Buttons -->
-					<button onclick="calculateRemainder()">Calculate</button>
-					<button onclick="fillRandomValues()">Fill Random Values</button>
-					<!-- Display mode switch -->
-					<div class="switch-container">
-						<span class="switch-label">Standard View</span>
-						<label class="switch">
-							<input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
-							<span class="slider"></span>
-						</label>
-						<span class="switch-label">Production Flow View</span>
-					</div>
-					<div class="result" id="calculator-result"></div>
-				</div>
-			</div>
-			<script>
-			// Existing JavaScript code for Performance Tracker
-			function getCurrentShift() {
-				const now = new Date();
-				const hours = now.getHours();
-				let shift = "";
-				if(hours >= 6 && hours < 14) {
-					shift = "Morning Shift";
-				} else if(hours >= 14 && hours < 22) {
-					shift = "Afternoon Shift";
-				} else {
-					shift = "Night Shift";
-				}
-				return shift;
-			}
-
-			function updateShiftProgress() {
-				const now = new Date();
-				const hours = now.getHours();
-				const minutes = now.getMinutes();
-				const shiftDuration = 480; // 8 hours = 480 minutes
-				let shiftStartTime = 0;
-				let shiftName = "";
-				if(hours >= 6 && hours < 14) {
-					shiftStartTime = 6 * 60; // 6 AM
-					shiftName = "Morning Shift";
-				} else if(hours >= 14 && hours < 22) {
-					shiftStartTime = 14 * 60; // 2 PM
-					shiftName = "Afternoon Shift";
-				} else {
-					shiftStartTime = 22 * 60; // 10 PM
-					shiftName = "Night Shift";
-				}
-				const currentTimeInMinutes = (hours * 60) + minutes;
-				if(shiftStartTime > currentTimeInMinutes) {
-					shiftStartTime -= 1440; // Adjust the start time for midnight shifts (subtracting 24 hours).
-				}
-				const timeElapsed = currentTimeInMinutes - shiftStartTime;
-				let shiftProgress = (timeElapsed / shiftDuration) * 100;
-				if(shiftProgress > 100) {
-					shiftProgress = 100;
-				}
-				if(shiftProgress < 0) shiftProgress = 0;
-				document.getElementById('current-shift').textContent = shiftName;
-				document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
-				document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
-			}
-			setInterval(updateShiftProgress, 60000);
-			updateShiftProgress();
-
-			function getExpectedProduction(target, elapsedMinutes) {
-				const totalShiftDuration = 480; // 8 hours = 480 minutes
-				const progressFactor = Math.pow(elapsedMinutes / totalShiftDuration, 1.5); // Exponential curve
-				return Math.round(target * progressFactor);
-			}
-
-			function checkLinePerformance(lineNumber) {
-				const targetInput = document.getElementById(`target-line${lineNumber}`);
-				const currentInput = document.getElementById(`current-line${lineNumber}`);
-				const resultDisplay = document.getElementById(`result-line${lineNumber}`);
-				const progressBar = document.getElementById(`progress-line${lineNumber}`);
-				const starsDisplay = document.getElementById(`stars-line${lineNumber}`);
-				const performanceDisplay = document.getElementById(`performance-line${lineNumber}`);
-				const expectedDisplay = document.getElementById(`expected-line${lineNumber}`);
-				const target = parseFloat(targetInput.value);
-				const currentOutput = parseFloat(currentInput.value);
-				const now = new Date();
-				const hours = now.getHours();
-				const minutes = now.getMinutes();
-				let elapsedMinutes = 0;
-				if(hours >= 6 && hours < 14) {
-					elapsedMinutes = (hours - 6) * 60 + minutes;
-				} else if(hours >= 14 && hours < 22) {
-					elapsedMinutes = (hours - 14) * 60 + minutes;
-				} else {
-					if(hours >= 22) {
-						elapsedMinutes = (hours - 22) * 60 + minutes;
-					} else {
-						elapsedMinutes = (hours + 2) * 60 + minutes;
-					}
-				}
-				const expectedProduction = getExpectedProduction(target, elapsedMinutes);
-				if(isNaN(target) || isNaN(currentOutput)) {
-					resultDisplay.textContent = "Please enter valid numbers for target and current output.";
-					return;
-				}
-				const progressPercentage = (currentOutput / target) * 100;
-				const performancePercentage = (currentOutput / expectedProduction) * 100;
-				const performancePercentageRounded = Math.round(performancePercentage);
-				resultDisplay.textContent = `Production: ${currentOutput} / ${target} (${Math.round(progressPercentage)}%)`;
-				progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
-				let stars = '';
-				if(performancePercentageRounded >= 100) {
-					stars = '★★★★★';
-				} else if(performancePercentageRounded >= 80) {
-					stars = '★★★★';
-				} else if(performancePercentageRounded >= 60) {
-					stars = '★★★';
-				} else if(performancePercentageRounded >= 40) {
-					stars = '★★';
-				} else if(performancePercentageRounded >= 20) {
-					stars = '★';
-				}
-				starsDisplay.innerHTML = stars;
-				performanceDisplay.textContent = `Performance: ${performancePercentageRounded}%`;
-				expectedDisplay.textContent = `Expected Production: ${expectedProduction} units`;
-			}
-
-			function checkAllPerformance() {
-				checkLinePerformance(1);
-				checkLinePerformance(2);
-				checkLinePerformance(3);
-			}
-			document.getElementById('target-line1').addEventListener('input', () => {
-				document.getElementById('check-line1').disabled = false;
-			});
-			document.getElementById('target-line2').addEventListener('input', () => {
-				document.getElementById('check-line2').disabled = false;
-			});
-			document.getElementById('target-line3').addEventListener('input', () => {
-				document.getElementById('check-line3').disabled = false;
-			});
-			// Full calculator logic
-			function calculateRemainder() {
-				// Total From Database (same for all packets)
-				const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
-				// Complete Pallets (subtracted once from Total From Database)
-				const completePallets = parseFloat(document.getElementById('complete-pallets').value);
-				// Validate inputs
-				if(isNaN(totalFromDatabase) || isNaN(completePallets)) {
-					document.getElementById('calculator-result').textContent = "Please enter valid numbers for Total From Database and Complete Pallets.";
-					return;
-				}
-				// Calculate remaining packets after subtracting complete pallets
-				const remainingPackets = totalFromDatabase - completePallets;
-				// Packet 1
-				const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value) || 0;
-				const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value) || 0;
-				const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value) || 0;
-				const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value) || 0;
-				const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value) || 0;
-				const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value) || 0;
-				const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value) || 0;
-				// Packet 2
-				const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value) || 0;
-				const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value) || 0;
-				const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value) || 0;
-				const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value) || 0;
-				const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value) || 0;
-				const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value) || 0;
-				const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value) || 0;
-				// Packet 3
-				const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value) || 0;
-				const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value) || 0;
-				const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value) || 0;
-				const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value) || 0;
-				const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value) || 0;
-				const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value) || 0;
-				const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value) || 0;
-				// Calculate remaining steps for Packet 1
-				const remainingUpholsteredRabatabil = remainingPackets - individualPackagedPacket1 - upholsteredRabatabil;
-				const remainingUpholsteredLada = remainingPackets - individualPackagedPacket1 - upholsteredLada;
-				const remainingUpholsteredBratStanga = remainingPackets - individualPackagedPacket1 - upholsteredBratStanga;
-				const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
-				const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
-				const remainingAssembledRabatabilLada = individualPackagedPacket1 - assembledRabatabilLada;
-				// Calculate remaining steps for Packet 2
-				const remainingUpholsteredBratDreapta = remainingPackets - individualPackagedPacket2 - upholsteredBratDreapta;
-				const remainingUpholsteredSpatarMare = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMare;
-				const remainingUpholsteredSpatarMic = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMic;
-				const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
-				const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
-				const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
-				// Calculate remaining steps for Packet 3
-				const remainingUpholsteredSezutFix = remainingPackets - individualPackagedPacket3 - upholsteredSezutFix;
-				const remainingUpholsteredSezutMobil = remainingPackets - individualPackagedPacket3 - upholsteredSezutMobil;
-				const remainingUpholsteredLadaMobila = remainingPackets - individualPackagedPacket3 - upholsteredLadaMobila;
-				const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
-				const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
-				const remainingAssembledSezutLada = individualPackagedPacket3 - assembledSezutLada;
-				// Check if we should display the standard view or the production flow view
-				const isProductionFlowView = document.getElementById('display-mode-switch').checked;
-				let result = '';
-				if(isProductionFlowView) {
-					// Production Flow View
-					result = `
-            <h3>Production Flow View</h3>
-            <ol>
-                <li>Aplicare TNT set 3 șezut: ${Math.round((remainingGluedSezutFix + remainingGluedSezutMobil + remainingGluedRabatabil) / 3)}</li>
-                <li>Adezivare sezut fix: ${remainingGluedSezutFix}</li>
-                <li>Adezivare set sezut/ lada mobila: ${remainingGluedSezutMobil}</li>
-                <li>Adezivare sezut Rabatabil: ${remainingGluedRabatabil}</li>
-                <li>Adezivare set 2 brate: ${Math.round((remainingGluedBratStanga + remainingGluedBratDreapta) / 2)}</li>
-                <li>Adezivare set 2 spatare: ${Math.round((remainingGluedSpatarMare + remainingGluedSpatarMic) / 2)}</li>
-                <li>Tapitare / Preducire sezut fix: ${remainingUpholsteredSezutFix}</li>
-                <li>Tapitare sezut mobil: ${remainingUpholsteredSezutMobil}</li>
-                <li>Tapitare sezut Rabatabil: ${remainingUpholsteredRabatabil}</li>
-                <li>Tapitare set 2 brate: ${Math.round((remainingUpholsteredBratStanga + remainingUpholsteredBratDreapta) / 2)}</li>
-                <li>Tapitare spatar mic: ${remainingUpholsteredSpatarMic}</li>
-                <li>Tapitare spatar mare: ${remainingUpholsteredSpatarMare}</li>
-                <li>Tapitare lada mobila: ${remainingUpholsteredLadaMobila}</li>
-                <li>Tapitare lada fixa: ${remainingUpholsteredLada}</li>
-                <li>Cuplare lada mobila/sezut mobil: ${remainingAssembledSezutLada}</li>
-                <li>Aplicare balamale/Cuplare sezut rabatabil/lada fixa: ${remainingAssembledRabatabilLada}</li>
-                <li>Tras set 3 huse perne Spătar: 0</li>
-                <li>Confectionare set filere cartoane: 0</li>
-                <li>Ambalare colet 1: ${remainingPackets - individualPackagedPacket1}</li>
-                <li>Ambalare colet 2: ${remainingPackets - individualPackagedPacket2}</li>
-                <li>Ambalare colet 3: ${remainingPackets - individualPackagedPacket3}</li>
-                <li>Aplicare coltare rigide si deservire robot: ${remainingPackets}</li>
-                <li>Aplicare ULL si transport produs finit: ${remainingPackets}</li>
-            </ol>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Line Performance Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e1e1e, #121212);
+    }
+
+    /* Background Elements */
+    .wave-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e1e1e, #121212);
+      animation: gradientAnimation 15s ease infinite;
+      z-index: -2;
+    }
+
+    .wave-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url('https://www.transparenttextures.com/patterns/alphawaves.png') repeat-x;
+      animation: scrollWave 10s linear infinite;
+      z-index: -3;
+    }
+
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      filter: blur(1px);
+      animation: fall linear infinite;
+    }
+
+    /* Language Switcher */
+    .language-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 5px;
+      z-index: 100;
+    }
+
+    .language-switcher button {
+      padding: 5px 10px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .language-switcher button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .language-switcher button.active {
+      background: #6200ea;
+      border-color: #6200ea;
+    }
+
+    /* Animations */
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes scrollWave {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 100% 0;
+      }
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(-100px) translateX(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateY(100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Card Styles */
+    .card {
+      flex: 1;
+      background: linear-gradient(145deg, #2a2a2a, #222222);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.3);
+      margin: 15px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease-in-out forwards;
+      max-width: 800px;
+      width: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    /* Form Elements */
+    .input-group {
+      margin: 12px 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #ccc;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      padding: 12px 16px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
+      color: #ffffff;
+      width: 100%;
+      max-width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+      background-color: #3a3a3a;
+      outline: none;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(98, 0, 234, 0.2);
+    }
+
+    /* Calculator Grid */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .calculator-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Buttons */
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      margin: 18px 0;
+      cursor: pointer;
+      border: none;
+      background: linear-gradient(90deg, #6200ea, #3700b3);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
+      width: 100%;
+      max-width: 250px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      align-self: center;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #3700b3, #6200ea);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    /* Typography */
+    h2,
+    h3 {
+      color: #fff;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h2:after,
+    h3:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #6200ea, #03dac6);
+      border-radius: 3px;
+    }
+
+    h3 {
+      margin-top: 30px;
+      color: #03dac6;
+    }
+
+    /* Results */
+    .result {
+      background: rgba(3, 218, 198, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-left: 4px solid #03dac6;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .result h3 {
+      color: #03dac6;
+      text-align: left;
+      padding-bottom: 0;
+      margin-top: 0;
+    }
+
+    .result h3:after {
+      display: none;
+    }
+
+    .result p {
+      margin: 8px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .result ol {
+      padding-left: 20px;
+    }
+
+    .result li {
+      margin-bottom: 8px;
+    }
+
+    /* Progress Bars */
+    .progress-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 20px;
+      background-color: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #6200ea, #3700b3);
+      transition: width 0.3s ease-in-out;
+    }
+
+    #shift-progress-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 20px;
+      background-color: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #shift-progress-fill {
+      height: 100%;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #03dac6, #018786);
+      transition: width 0.3s ease-in-out;
+    }
+
+    /* Stars Rating */
+    .stars {
+      font-size: 2em;
+      margin: 10px 0;
+    }
+
+    .star {
+      color: gold;
+    }
+
+    .progress-color {
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .expected-production {
+      font-size: 16px;
+      color: #03dac6;
+      font-weight: bold;
+    }
+
+    /* Switch Styles */
+    .switch-container {
+      margin: 30px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin: 0 15px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 34px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    input:checked+.slider {
+      background: linear-gradient(90deg, #03dac6, #018786);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(26px);
+    }
+
+    .switch-label {
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .navbar button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 10px;
+      cursor: pointer;
+      border: none;
+      background: linear-gradient(90deg, #6200ea, #3700b3);
+      color: white;
+      border-radius: 5px;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .navbar button:hover {
+      background: linear-gradient(90deg, #3700b3, #6200ea);
+    }
+
+    .navbar button.active {
+      background: linear-gradient(90deg, #03dac6, #018786);
+    }
+
+    /* Tabs */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Loader */
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      z-index: 9999;
+    }
+
+    .loader {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, transparent, transparent 40%, #e5f403);
+      animation: animate 2s linear infinite;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: rotate(0deg);
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .loader::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      background: #000;
+      border-radius: 50%;
+      z-index: 1000;
+    }
+
+    .loader::after {
+      content: '';
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      background: #000;
+      background: linear-gradient(45deg, transparent, transparent 40%, #e5f403);
+      border-radius: 50%;
+      z-index: 1;
+      filter: blur(30px);
+    }
+
+    .page-content {
+      display: none;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .card {
+        padding: 15px;
+        margin: 10px 0;
+      }
+
+      .input-group input {
+        padding: 10px 12px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      .switch-container {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .switch {
+        margin: 10px 0;
+      }
+
+      .switch-label {
+        margin: 5px 0;
+      }
+
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .language-switcher {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loader-container">
+    <div class="loader"></div>
+  </div>
+  <div class="page-content">
+    <!-- Add the wave and gradient backgrounds -->
+    <div class="wave-background"></div>
+    <div class="wave-effect"></div>
+    
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+      <button onclick="changeLanguage('en')">EN</button>
+      <button onclick="changeLanguage('ro')">RO</button>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <button onclick="showTab('performance')" class="active">Performance Tracker</button>
+      <button onclick="showTab('calculator')">Order Remainder Calculator</button>
+    </div>
+    
+    <!-- Performance Tracker Tab -->
+    <div id="performance" class="tab-content active">
+      <div id="shift-info">
+        <h1>Production Line Performance Tracker</h1>
+        <p>Current Shift: <span id="current-shift">Calculating...</span></p>
+        <div id="shift-progress-bar">
+          <div id="shift-progress-fill">0%</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Chslong Line</h2>
+        <div class="input-group">
+          <label>Target Per Day: <input type="number" id="target-line1" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+          <label>Current Output: <input type="number" id="current-line1" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line1"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-line1"></div>
+        </div>
+        <button id="check-line1" onclick="checkLinePerformance(1)" disabled>Check Line 1</button>
+        <div id="stars-line1" class="stars"></div>
+        <div id="performance-line1" class="progress-color"></div>
+        <div id="expected-line1" class="expected-production"></div>
+      </div>
+      <div class="card">
+        <h2>Backrest Line</h2>
+        <div class="input-group">
+          <label>Target Per Day: <input type="number" id="target-line2" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+          <label>Current Output: <input type="number" id="current-line2" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line2"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-line2"></div>
+        </div>
+        <button id="check-line2" onclick="checkLinePerformance(2)" disabled>Check Line 2</button>
+        <div id="stars-line2" class="stars"></div>
+        <div id="performance-line2" class="progress-color"></div>
+        <div id="expected-line2" class="expected-production"></div>
+      </div>
+      <div class="card">
+        <h2>Seat Line</h2>
+        <div class="input-group">
+          <label>Target Per Day: <input type="number" id="target-line3" placeholder="Enter target"></label>
+        </div>
+        <div class="input-group">
+          <label>Current Output: <input type="number" id="current-line3" placeholder="Enter current output"></label>
+        </div>
+        <div class="result" id="result-line3"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-line3"></div>
+        </div>
+        <button id="check-line3" onclick="checkLinePerformance(3)" disabled>Check Line 3</button>
+        <div id="stars-line3" class="stars"></div>
+        <div id="performance-line3" class="progress-color"></div>
+        <div id="expected-line3" class="expected-production"></div>
+      </div>
+      <button id="check-all" onclick="checkAllPerformance()">Check All</button>
+    </div>
+    
+    <!-- Order Remainder Calculator Tab -->
+    <div id="calculator" class="tab-content">
+      <div class="card">
+        <h2>Order Remainder Calculator</h2>
+        <!-- Total From Database (same for all packets) -->
+        <div class="input-group">
+          <label>Total From Database: <input type="number" id="total-from-database" placeholder="Enter total"></label>
+        </div>
+        <!-- Complete Pallets (subtracted once from Total From Database) -->
+        <div class="input-group">
+          <label>Complete Pallets: <input type="number" id="complete-pallets" placeholder="Enter complete pallets"></label>
+        </div>
+        <!-- Packet 1 -->
+        <h3>Packet 1</h3>
+        <div class="input-group">
+          <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet1" placeholder="Enter individual units"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Rabatabil: <input type="number" id="upholstered-rabatabil" placeholder="Enter upholstered Rabatabil"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Ladă Fixă: <input type="number" id="upholstered-lada" placeholder="Enter upholstered Ladă Fixă"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Brat Stânga: <input type="number" id="upholstered-brat-stanga" placeholder="Enter upholstered Brat Stânga"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Rabatabil: <input type="number" id="glued-rabatabil" placeholder="Enter glued Rabatabil"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Brat Stânga: <input type="number" id="glued-brat-stanga" placeholder="Enter glued Brat Stânga"></label>
+        </div>
+        <div class="input-group">
+          <label>Assembled Rabatabil + Ladă Fixă: <input type="number" id="assembled-rabatabil-lada" placeholder="Enter assembled Rabatabil + Ladă Fixă"></label>
+        </div>
+        <!-- Packet 2 -->
+        <h3>Packet 2</h3>
+        <div class="input-group">
+          <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet2" placeholder="Enter individual units"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Brat Dreapta: <input type="number" id="upholstered-brat-dreapta" placeholder="Enter upholstered Brat Dreapta"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Spătar Mare: <input type="number" id="upholstered-spatar-mare" placeholder="Enter upholstered Spătar Mare"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Spătar Mic: <input type="number" id="upholstered-spatar-mic" placeholder="Enter upholstered Spătar Mic"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Brat Dreapta: <input type="number" id="glued-brat-dreapta" placeholder="Enter glued Brat Dreapta"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Spătar Mare: <input type="number" id="glued-spatar-mare" placeholder="Enter glued Spătar Mare"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Spătar Mic: <input type="number" id="glued-spatar-mic" placeholder="Enter glued Spătar Mic"></label>
+        </div>
+        <!-- Packet 3 -->
+        <h3>Packet 3</h3>
+        <div class="input-group">
+          <label>Individual Packaged Units: <input type="number" id="individual-packaged-packet3" placeholder="Enter individual units"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Șezut Fix: <input type="number" id="upholstered-sezut-fix" placeholder="Enter upholstered Șezut Fix"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Șezut Mobil: <input type="number" id="upholstered-sezut-mobil" placeholder="Enter upholstered Șezut Mobil"></label>
+        </div>
+        <div class="input-group">
+          <label>Upholstered Lada Mobilă: <input type="number" id="upholstered-lada-mobila" placeholder="Enter upholstered Lada Mobilă"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Șezut Fix: <input type="number" id="glued-sezut-fix" placeholder="Enter glued Șezut Fix"></label>
+        </div>
+        <div class="input-group">
+          <label>Glued Șezut Mobil: <input type="number" id="glued-sezut-mobil" placeholder="Enter glued Șezut Mobil"></label>
+        </div>
+        <div class="input-group">
+          <label>Assembled Șezut Mobil + Lada Mobilă: <input type="number" id="assembled-sezut-lada" placeholder="Enter assembled Șezut Mobil + Lada Mobilă"></label>
+        </div>
+        <!-- Buttons -->
+        <button onclick="calculateRemainder()">Calculate</button>
+        <button onclick="fillRandomValues()">Fill Random Values</button>
+        <!-- Display mode switch -->
+        <div class="switch-container">
+          <span class="switch-label">Standard View</span>
+          <label class="switch">
+            <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+            <span class="slider"></span>
+          </label>
+          <span class="switch-label">Production Flow View</span>
+        </div>
+        <div class="result" id="calculator-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Translation dictionary
+    const translations = {
+      en: {
+        performanceTracker: "Performance Tracker",
+        orderCalculator: "Order Remainder Calculator",
+        currentShift: "Current Shift:",
+        targetPerDay: "Target Per Day:",
+        currentOutput: "Current Output:",
+        checkLine: "Check Line",
+        checkAll: "Check All",
+        production: "Production:",
+        performance: "Performance:",
+        expectedProduction: "Expected Production:",
+        totalFromDB: "Total From Database:",
+        completePallets: "Complete Pallets:",
+        calculate: "Calculate",
+        fillRandom: "Fill Random Values",
+        standardView: "Standard View",
+        productionView: "Production Flow View",
+        morningShift: "Morning Shift",
+        afternoonShift: "Afternoon Shift",
+        nightShift: "Night Shift",
+        chslongLine: "Chslong Line",
+        backrestLine: "Backrest Line",
+        seatLine: "Seat Line",
+        packet1: "Packet 1",
+        packet2: "Packet 2",
+        packet3: "Packet 3"
+      },
+      ro: {
+        performanceTracker: "Monitorizare Performanță",
+        orderCalculator: "Calculator Comenzi Rămase",
+        currentShift: "Schimb Curent:",
+        targetPerDay: "Țintă Pe Zi:",
+        currentOutput: "Producție Curentă:",
+        checkLine: "Verifică Linia",
+        checkAll: "Verifică Toate",
+        production: "Producție:",
+        performance: "Performanță:",
+        expectedProduction: "Producție Așteptată:",
+        totalFromDB: "Total Din Baza De Date:",
+        completePallets: "Paleti Compleți:",
+        calculate: "Calculează",
+        fillRandom: "Completează Aleatoriu",
+        standardView: "Vizualizare Standard",
+        productionView: "Vizualizare Flux Producție",
+        morningShift: "Schimbul Dimineții",
+        afternoonShift: "Schimbul După-Amiezii",
+        nightShift: "Schimbul Nopții",
+        chslongLine: "Linia Chslong",
+        backrestLine: "Linia Spătar",
+        seatLine: "Linia Șezut",
+        packet1: "Pachetul 1",
+        packet2: "Pachetul 2",
+        packet3: "Pachetul 3"
+      }
+    };
+
+    let currentLanguage = 'en';
+
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      updateTexts();
+      // Update active button state
+      document.querySelectorAll('.language-switcher button').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toUpperCase() === lang.toUpperCase());
+      });
+    }
+
+    function updateTexts() {
+      const t = translations[currentLanguage];
+      
+      // Navbar buttons
+      document.querySelector('.navbar button:nth-child(1)').textContent = t.performanceTracker;
+      document.querySelector('.navbar button:nth-child(2)').textContent = t.orderCalculator;
+      
+      // Performance tracker
+      document.querySelector('#shift-info p').innerHTML = `${t.currentShift} <span id="current-shift">Calculating...</span>`;
+      document.querySelectorAll('.card h2')[0].textContent = t.chslongLine;
+      document.querySelectorAll('.card h2')[1].textContent = t.backrestLine;
+      document.querySelectorAll('.card h2')[2].textContent = t.seatLine;
+      
+      document.querySelectorAll('.input-group label')[0].textContent = t.targetPerDay;
+      document.querySelectorAll('.input-group label')[1].textContent = t.currentOutput;
+      document.querySelectorAll('#check-line1, #check-line2, #check-line3').forEach(btn => {
+        btn.textContent = `${t.checkLine} ${btn.id.slice(-1)}`;
+      });
+      document.getElementById('check-all').textContent = t.checkAll;
+      
+      // Calculator
+      document.querySelectorAll('.input-group label')[2].textContent = t.totalFromDB;
+      document.querySelectorAll('.input-group label')[3].textContent = t.completePallets;
+      document.querySelectorAll('h3')[0].textContent = t.packet1;
+      document.querySelectorAll('h3')[1].textContent = t.packet2;
+      document.querySelectorAll('h3')[2].textContent = t.packet3;
+      document.querySelector('.card button:nth-child(1)').textContent = t.calculate;
+      document.querySelector('.card button:nth-child(2)').textContent = t.fillRandom;
+      document.querySelectorAll('.switch-label')[0].textContent = t.standardView;
+      document.querySelectorAll('.switch-label')[1].textContent = t.productionView;
+      
+      // Update shift names if they're displayed
+      updateShiftProgress();
+    }
+
+    // Update shift names in the progress display
+    const originalUpdateShiftProgress = updateShiftProgress;
+    updateShiftProgress = function() {
+      originalUpdateShiftProgress();
+      const t = translations[currentLanguage];
+      const shiftElement = document.getElementById('current-shift');
+      if (shiftElement.textContent.includes("Morning") || shiftElement.textContent.includes("Dimineții")) {
+        shiftElement.textContent = t.morningShift;
+      } else if (shiftElement.textContent.includes("Afternoon") || shiftElement.textContent.includes("După-Amiezii")) {
+        shiftElement.textContent = t.afternoonShift;
+      } else if (shiftElement.textContent.includes("Night") || shiftElement.textContent.includes("Nopții")) {
+        shiftElement.textContent = t.nightShift;
+      }
+    };
+
+    function getCurrentShift() {
+      const now = new Date();
+      const hours = now.getHours();
+      const t = translations[currentLanguage];
+      
+      if(hours >= 6 && hours < 14) {
+        return t.morningShift;
+      } else if(hours >= 14 && hours < 22) {
+        return t.afternoonShift;
+      } else {
+        return t.nightShift;
+      }
+    }
+
+    function updateShiftProgress() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const shiftDuration = 480; // 8 hours = 480 minutes
+      let shiftStartTime = 0;
+      let shiftName = "";
+      if(hours >= 6 && hours < 14) {
+        shiftStartTime = 6 * 60; // 6 AM
+        shiftName = translations[currentLanguage].morningShift;
+      } else if(hours >= 14 && hours < 22) {
+        shiftStartTime = 14 * 60; // 2 PM
+        shiftName = translations[currentLanguage].afternoonShift;
+      } else {
+        shiftStartTime = 22 * 60; // 10 PM
+        shiftName = translations[currentLanguage].nightShift;
+      }
+      const currentTimeInMinutes = (hours * 60) + minutes;
+      if(shiftStartTime > currentTimeInMinutes) {
+        shiftStartTime -= 1440; // Adjust the start time for midnight shifts (subtracting 24 hours).
+      }
+      const timeElapsed = currentTimeInMinutes - shiftStartTime;
+      let shiftProgress = (timeElapsed / shiftDuration) * 100;
+      if(shiftProgress > 100) {
+        shiftProgress = 100;
+      }
+      if(shiftProgress < 0) shiftProgress = 0;
+      document.getElementById('current-shift').textContent = shiftName;
+      document.getElementById('shift-progress-fill').style.width = `${shiftProgress}%`;
+      document.getElementById('shift-progress-fill').textContent = `${Math.round(shiftProgress)}%`;
+    }
+
+    function getExpectedProduction(target, elapsedMinutes) {
+      const totalShiftDuration = 480; // 8 hours = 480 minutes
+      const progressFactor = Math.pow(elapsedMinutes / totalShiftDuration, 1.5); // Exponential curve
+      return Math.round(target * progressFactor);
+    }
+
+    function checkLinePerformance(lineNumber) {
+      const targetInput = document.getElementById(`target-line${lineNumber}`);
+      const currentInput = document.getElementById(`current-line${lineNumber}`);
+      const resultDisplay = document.getElementById(`result-line${lineNumber}`);
+      const progressBar = document.getElementById(`progress-line${lineNumber}`);
+      const starsDisplay = document.getElementById(`stars-line${lineNumber}`);
+      const performanceDisplay = document.getElementById(`performance-line${lineNumber}`);
+      const expectedDisplay = document.getElementById(`expected-line${lineNumber}`);
+      const target = parseFloat(targetInput.value);
+      const currentOutput = parseFloat(currentInput.value);
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      let elapsedMinutes = 0;
+      if(hours >= 6 && hours < 14) {
+        elapsedMinutes = (hours - 6) * 60 + minutes;
+      } else if(hours >= 14 && hours < 22) {
+        elapsedMinutes = (hours - 14) * 60 + minutes;
+      } else {
+        if(hours >= 22) {
+          elapsedMinutes = (hours - 22) * 60 + minutes;
+        } else {
+          elapsedMinutes = (hours + 2) * 60 + minutes;
+        }
+      }
+      const expectedProduction = getExpectedProduction(target, elapsedMinutes);
+      if(isNaN(target) || isNaN(currentOutput)) {
+        resultDisplay.textContent = "Please enter valid numbers for target and current output.";
+        return;
+      }
+      const t = translations[currentLanguage];
+      const progressPercentage = (currentOutput / target) * 100;
+      const performancePercentage = (currentOutput / expectedProduction) * 100;
+      const performancePercentageRounded = Math.round(performancePercentage);
+      resultDisplay.textContent = `${t.production} ${currentOutput} / ${target} (${Math.round(progressPercentage)}%)`;
+      progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
+      let stars = '';
+      if(performancePercentageRounded >= 100) {
+        stars = '★★★★★';
+      } else if(performancePercentageRounded >= 80) {
+        stars = '★★★★';
+      } else if(performancePercentageRounded >= 60) {
+        stars = '★★★';
+      } else if(performancePercentageRounded >= 40) {
+        stars = '★★';
+      } else if(performancePercentageRounded >= 20) {
+        stars = '★';
+      }
+      starsDisplay.innerHTML = stars;
+      performanceDisplay.textContent = `${t.performance}: ${performancePercentageRounded}%`;
+      expectedDisplay.textContent = `${t.expectedProduction}: ${expectedProduction} units`;
+    }
+
+    function checkAllPerformance() {
+      checkLinePerformance(1);
+      checkLinePerformance(2);
+      checkLinePerformance(3);
+    }
+
+    document.getElementById('target-line1').addEventListener('input', () => {
+      document.getElementById('check-line1').disabled = false;
+    });
+    document.getElementById('target-line2').addEventListener('input', () => {
+      document.getElementById('check-line2').disabled = false;
+    });
+    document.getElementById('target-line3').addEventListener('input', () => {
+      document.getElementById('check-line3').disabled = false;
+    });
+
+    // Full calculator logic
+    function calculateRemainder() {
+      // Total From Database (same for all packets)
+      const totalFromDatabase = parseFloat(document.getElementById('total-from-database').value);
+      // Complete Pallets (subtracted once from Total From Database)
+      const completePallets = parseFloat(document.getElementById('complete-pallets').value);
+      // Validate inputs
+      if(isNaN(totalFromDatabase) || isNaN(completePallets)) {
+        document.getElementById('calculator-result').textContent = "Please enter valid numbers for Total From Database and Complete Pallets.";
+        return;
+      }
+      // Calculate remaining packets after subtracting complete pallets
+      const remainingPackets = totalFromDatabase - completePallets;
+      // Packet 1
+      const individualPackagedPacket1 = parseFloat(document.getElementById('individual-packaged-packet1').value) || 0;
+      const upholsteredRabatabil = parseFloat(document.getElementById('upholstered-rabatabil').value) || 0;
+      const upholsteredLada = parseFloat(document.getElementById('upholstered-lada').value) || 0;
+      const upholsteredBratStanga = parseFloat(document.getElementById('upholstered-brat-stanga').value) || 0;
+      const gluedRabatabil = parseFloat(document.getElementById('glued-rabatabil').value) || 0;
+      const gluedBratStanga = parseFloat(document.getElementById('glued-brat-stanga').value) || 0;
+      const assembledRabatabilLada = parseFloat(document.getElementById('assembled-rabatabil-lada').value) || 0;
+      // Packet 2
+      const individualPackagedPacket2 = parseFloat(document.getElementById('individual-packaged-packet2').value) || 0;
+      const upholsteredBratDreapta = parseFloat(document.getElementById('upholstered-brat-dreapta').value) || 0;
+      const upholsteredSpatarMare = parseFloat(document.getElementById('upholstered-spatar-mare').value) || 0;
+      const upholsteredSpatarMic = parseFloat(document.getElementById('upholstered-spatar-mic').value) || 0;
+      const gluedBratDreapta = parseFloat(document.getElementById('glued-brat-dreapta').value) || 0;
+      const gluedSpatarMare = parseFloat(document.getElementById('glued-spatar-mare').value) || 0;
+      const gluedSpatarMic = parseFloat(document.getElementById('glued-spatar-mic').value) || 0;
+      // Packet 3
+      const individualPackagedPacket3 = parseFloat(document.getElementById('individual-packaged-packet3').value) || 0;
+      const upholsteredSezutFix = parseFloat(document.getElementById('upholstered-sezut-fix').value) || 0;
+      const upholsteredSezutMobil = parseFloat(document.getElementById('upholstered-sezut-mobil').value) || 0;
+      const upholsteredLadaMobila = parseFloat(document.getElementById('upholstered-lada-mobila').value) || 0;
+      const gluedSezutFix = parseFloat(document.getElementById('glued-sezut-fix').value) || 0;
+      const gluedSezutMobil = parseFloat(document.getElementById('glued-sezut-mobil').value) || 0;
+      const assembledSezutLada = parseFloat(document.getElementById('assembled-sezut-lada').value) || 0;
+      // Calculate remaining steps for Packet 1
+      const remainingUpholsteredRabatabil = remainingPackets - individualPackagedPacket1 - upholsteredRabatabil;
+      const remainingUpholsteredLada = remainingPackets - individualPackagedPacket1 - upholsteredLada;
+      const remainingUpholsteredBratStanga = remainingPackets - individualPackagedPacket1 - upholsteredBratStanga;
+      const remainingGluedRabatabil = upholsteredRabatabil - gluedRabatabil;
+      const remainingGluedBratStanga = upholsteredBratStanga - gluedBratStanga;
+      const remainingAssembledRabatabilLada = individualPackagedPacket1 - assembledRabatabilLada;
+      // Calculate remaining steps for Packet 2
+      const remainingUpholsteredBratDreapta = remainingPackets - individualPackagedPacket2 - upholsteredBratDreapta;
+      const remainingUpholsteredSpatarMare = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMare;
+      const remainingUpholsteredSpatarMic = remainingPackets - individualPackagedPacket2 - upholsteredSpatarMic;
+      const remainingGluedBratDreapta = upholsteredBratDreapta - gluedBratDreapta;
+      const remainingGluedSpatarMare = upholsteredSpatarMare - gluedSpatarMare;
+      const remainingGluedSpatarMic = upholsteredSpatarMic - gluedSpatarMic;
+      // Calculate remaining steps for Packet 3
+      const remainingUpholsteredSezutFix = remainingPackets - individualPackagedPacket3 - upholsteredSezutFix;
+      const remainingUpholsteredSezutMobil = remainingPackets - individualPackagedPacket3 - upholsteredSezutMobil;
+      const remainingUpholsteredLadaMobila = remainingPackets - individualPackagedPacket3 - upholsteredLadaMobila;
+      const remainingGluedSezutFix = upholsteredSezutFix - gluedSezutFix;
+      const remainingGluedSezutMobil = upholsteredSezutMobil - gluedSezutMobil;
+      const remainingAssembledSezutLada = individualPackagedPacket3 - assembledSezutLada;
+      // Check if we should display the standard view or the production flow view
+      const isProductionFlowView = document.getElementById('display-mode-switch').checked;
+      let result = '';
+      if(isProductionFlowView) {
+        // Production Flow View
+        result = `
+          <h3>${translations[currentLanguage].productionView}</h3>
+          <ol>
+              <li>Aplicare TNT set 3 șezut: ${Math.round((remainingGluedSezutFix + remainingGluedSezutMobil + remainingGluedRabatabil) / 3)}</li>
+              <li>Adezivare sezut fix: ${remainingGluedSezutFix}</li>
+              <li>Adezivare set sezut/ lada mobila: ${remainingGluedSezutMobil}</li>
+              <li>Adezivare sezut Rabatabil: ${remainingGluedRabatabil}</li>
+              <li>Adezivare set 2 brate: ${Math.round((remainingGluedBratStanga + remainingGluedBratDreapta) / 2)}</li>
+              <li>Adezivare set 2 spatare: ${Math.round((remainingGluedSpatarMare + remainingGluedSpatarMic) / 2)}</li>
+              <li>Tapitare / Preducire sezut fix: ${remainingUpholsteredSezutFix}</li>
+              <li>Tapitare sezut mobil: ${remainingUpholsteredSezutMobil}</li>
+              <li>Tapitare sezut Rabatabil: ${remainingUpholsteredRabatabil}</li>
+              <li>Tapitare set 2 brate: ${Math.round((remainingUpholsteredBratStanga + remainingUpholsteredBratDreapta) / 2)}</li>
+              <li>Tapitare spatar mic: ${remainingUpholsteredSpatarMic}</li>
+              <li>Tapitare spatar mare: ${remainingUpholsteredSpatarMare}</li>
+              <li>Tapitare lada mobila: ${remainingUpholsteredLadaMobila}</li>
+              <li>Tapitare lada fixa: ${remainingUpholsteredLada}</li>
+              <li>Cuplare lada mobila/sezut mobil: ${remainingAssembledSezutLada}</li>
+              <li>Aplicare balamale/Cuplare sezut rabatabil/lada fixa: ${remainingAssembledRabatabilLada}</li>
+              <li>Tras set 3 huse perne Spătar: 0</li>
+              <li>Confectionare set filere cartoane: 0</li>
+              <li>Ambalare colet 1: ${remainingPackets - individualPackagedPacket1}</li>
+              <li>Ambalare colet 2: ${remainingPackets - individualPackagedPacket2}</li>
+              <li>Ambalare colet 3: ${remainingPackets - individualPackagedPacket3}</li>
+              <li>Aplicare coltare rigide si deservire robot: ${remainingPackets}</li>
+              <li>Aplicare ULL si transport produs finit: ${remainingPackets}</li>
+          </ol>
         `;
-				} else {
-					// Standard View (original output format)
-					result = `
-            <h3>Packet 1</h3>
-            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket1}</p>
-            <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
-            <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
-            <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
-            <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
-            <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
-            <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
+      } else {
+        // Standard View (original output format)
+        result = `
+          <h3>${translations[currentLanguage].packet1}</h3>
+          <p>Remaining Packets: ${remainingPackets - individualPackagedPacket1}</p>
+          <p>Remaining Upholstered Rabatabil: ${remainingUpholsteredRabatabil}</p>
+          <p>Remaining Upholstered Ladă Fixă: ${remainingUpholsteredLada}</p>
+          <p>Remaining Upholstered Brat Stânga: ${remainingUpholsteredBratStanga}</p>
+          <p>Remaining Glued Rabatabil: ${remainingGluedRabatabil}</p>
+          <p>Remaining Glued Brat Stânga: ${remainingGluedBratStanga}</p>
+          <p>Remaining Assembled Rabatabil + Ladă Fixă: ${remainingAssembledRabatabilLada}</p>
 
-            <h3>Packet 2</h3>
-            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket2}</p>
-            <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
-            <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
-            <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
-            <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
-            <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
-            <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
+          <h3>${translations[currentLanguage].packet2}</h3>
+          <p>Remaining Packets: ${remainingPackets - individualPackagedPacket2}</p>
+          <p>Remaining Upholstered Brat Dreapta: ${remainingUpholsteredBratDreapta}</p>
+          <p>Remaining Upholstered Spătar Mare: ${remainingUpholsteredSpatarMare}</p>
+          <p>Remaining Upholstered Spătar Mic: ${remainingUpholsteredSpatarMic}</p>
+          <p>Remaining Glued Brat Dreapta: ${remainingGluedBratDreapta}</p>
+          <p>Remaining Glued Spătar Mare: ${remainingGluedSpatarMare}</p>
+          <p>Remaining Glued Spătar Mic: ${remainingGluedSpatarMic}</p>
 
-            <h3>Packet 3</h3>
-            <p>Remaining Packets: ${remainingPackets - individualPackagedPacket3}</p>
-            <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
-            <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
-            <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
-            <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
-            <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
-            <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
+          <h3>${translations[currentLanguage].packet3}</h3>
+          <p>Remaining Packets: ${remainingPackets - individualPackagedPacket3}</p>
+          <p>Remaining Upholstered Șezut Fix: ${remainingUpholsteredSezutFix}</p>
+          <p>Remaining Upholstered Șezut Mobil: ${remainingUpholsteredSezutMobil}</p>
+          <p>Remaining Upholstered Lada Mobilă: ${remainingUpholsteredLadaMobila}</p>
+          <p>Remaining Glued Șezut Fix: ${remainingGluedSezutFix}</p>
+          <p>Remaining Glued Șezut Mobil: ${remainingGluedSezutMobil}</p>
+          <p>Remaining Assembled Șezut Mobil + Lada Mobilă: ${remainingAssembledSezutLada}</p>
         `;
-				}
-				document.getElementById('calculator-result').innerHTML = result;
-			}
-			// Fill random values for testing
-			function fillRandomValues() {
-				const randomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-				// Total From Database and Complete Pallets
-				document.getElementById('total-from-database').value = randomValue(100, 200);
-				document.getElementById('complete-pallets').value = randomValue(10, 50);
-				// Packet 1
-				document.getElementById('individual-packaged-packet1').value = randomValue(10, 50);
-				document.getElementById('upholstered-rabatabil').value = randomValue(10, 50);
-				document.getElementById('upholstered-lada').value = randomValue(10, 50);
-				document.getElementById('upholstered-brat-stanga').value = randomValue(10, 50);
-				document.getElementById('glued-rabatabil').value = randomValue(10, 50);
-				document.getElementById('glued-brat-stanga').value = randomValue(10, 50);
-				document.getElementById('assembled-rabatabil-lada').value = randomValue(10, 50);
-				// Packet 2
-				document.getElementById('individual-packaged-packet2').value = randomValue(10, 50);
-				document.getElementById('upholstered-brat-dreapta').value = randomValue(10, 50);
-				document.getElementById('upholstered-spatar-mare').value = randomValue(10, 50);
-				document.getElementById('upholstered-spatar-mic').value = randomValue(10, 50);
-				document.getElementById('glued-brat-dreapta').value = randomValue(10, 50);
-				document.getElementById('glued-spatar-mare').value = randomValue(10, 50);
-				document.getElementById('glued-spatar-mic').value = randomValue(10, 50);
-				// Packet 3
-				document.getElementById('individual-packaged-packet3').value = randomValue(10, 50);
-				document.getElementById('upholstered-sezut-fix').value = randomValue(10, 50);
-				document.getElementById('upholstered-sezut-mobil').value = randomValue(10, 50);
-				document.getElementById('upholstered-lada-mobila').value = randomValue(10, 50);
-				document.getElementById('glued-sezut-fix').value = randomValue(10, 50);
-				document.getElementById('glued-sezut-mobil').value = randomValue(10, 50);
-				document.getElementById('assembled-sezut-lada').value = randomValue(10, 50);
-			}
-			// Tab navigation logic
-			function showTab(tabName) {
-				const tabs = document.querySelectorAll('.tab-content');
-				tabs.forEach(tab => tab.classList.remove('active'));
-				const buttons = document.querySelectorAll('.navbar button');
-				buttons.forEach(button => button.classList.remove('active'));
-				document.getElementById(tabName).classList.add('active');
-				document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
-			}
-			// Toggle between display modes
-			function toggleDisplayMode() {
-				// Recalculate with the new display mode
-				calculateRemainder();
-			}
-				function createFallingStars() {
-  const container = document.createElement('div');
-  container.className = 'stars-container';
-  document.body.appendChild(container);
-  
-  // Create 50 stars (adjust number as needed)
-  for (let i = 0; i < 50; i++) {
-    setTimeout(() => {
-      const star = document.createElement('div');
-      star.className = 'star';
+      }
+      document.getElementById('calculator-result').innerHTML = result;
+    }
+
+    // Fill random values for testing
+    function fillRandomValues() {
+      const randomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+      // Total From Database and Complete Pallets
+      document.getElementById('total-from-database').value = randomValue(100, 200);
+      document.getElementById('complete-pallets').value = randomValue(10, 50);
+      // Packet 1
+      document.getElementById('individual-packaged-packet1').value = randomValue(10, 50);
+      document.getElementById('upholstered-rabatabil').value = randomValue(10, 50);
+      document.getElementById('upholstered-lada').value = randomValue(10, 50);
+      document.getElementById('upholstered-brat-stanga').value = randomValue(10, 50);
+      document.getElementById('glued-rabatabil').value = randomValue(10, 50);
+      document.getElementById('glued-brat-stanga').value = randomValue(10, 50);
+      document.getElementById('assembled-rabatabil-lada').value = randomValue(10, 50);
+      // Packet 2
+      document.getElementById('individual-packaged-packet2').value = randomValue(10, 50);
+      document.getElementById('upholstered-brat-dreapta').value = randomValue(10, 50);
+      document.getElementById('upholstered-spatar-mare').value = randomValue(10, 50);
+      document.getElementById('upholstered-spatar-mic').value = randomValue(10, 50);
+      document.getElementById('glued-brat-dreapta').value = randomValue(10, 50);
+      document.getElementById('glued-spatar-mare').value = randomValue(10, 50);
+      document.getElementById('glued-spatar-mic').value = randomValue(10, 50);
+      // Packet 3
+      document.getElementById('individual-packaged-packet3').value = randomValue(10, 50);
+      document.getElementById('upholstered-sezut-fix').value = randomValue(10, 50);
+      document.getElementById('upholstered-sezut-mobil').value = randomValue(10, 50);
+      document.getElementById('upholstered-lada-mobila').value = randomValue(10, 50);
+      document.getElementById('glued-sezut-fix').value = randomValue(10, 50);
+      document.getElementById('glued-sezut-mobil').value = randomValue(10, 50);
+      document.getElementById('assembled-sezut-lada').value = randomValue(10, 50);
+    }
+
+    // Tab navigation logic
+    function showTab(tabName) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      const buttons = document.querySelectorAll('.navbar button');
+      buttons.forEach(button => button.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelector(`.navbar button[onclick="showTab('${tabName}')"]`).classList.add('active');
+    }
+
+    // Toggle between display modes
+    function toggleDisplayMode() {
+      // Recalculate with the new display mode
+      calculateRemainder();
+    }
+
+    function createFallingStars() {
+      const container = document.createElement('div');
+      container.className = 'stars-container';
+      document.body.insertBefore(container, document.body.firstChild);
       
-      // Random size between 1-3px
-      const size = Math.random() * 2 + 1;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      
-      // Random starting position
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.top = `${Math.random() * 100}%`;
-      
-      // Random animation duration (3-8 seconds)
-      const duration = Math.random() * 5 + 3;
-      star.style.animationDuration = `${duration}s`;
-      
-      // Random delay (0-10 seconds)
-      star.style.animationDelay = `${Math.random() * 10}s`;
-      
-      container.appendChild(star);
-    }, i * 200); // Stagger creation
-  }
-}
-			// Loader script
-			document.addEventListener('DOMContentLoaded', function() {
-				createFallingStars(); // Add this line
-				setTimeout(function() {
-					document.querySelector('.loader-container').style.display = 'none';
-					document.querySelector('.page-content').style.display = 'block';
-				}, 3000); // 3 seconds
-			});
-			</script>
-		</div> <!-- Close the page-content div -->
-	</body>
+      // Create 50 stars (adjust number as needed)
+      for(let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const star = document.createElement('div');
+          star.className = 'star';
+          // Random size between 1-3px
+          const size = Math.random() * 2 + 1;
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          // Random starting position
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          // Random animation duration (3-8 seconds)
+          const duration = Math.random() * 5 + 3;
+          star.style.animationDuration = `${duration}s`;
+          // Random delay (0-10 seconds)
+          star.style.animationDelay = `${Math.random() * 10}s`;
+          container.appendChild(star);
+        }, i * 200); // Stagger creation
+      }
+    }
+
+    // Loader script
+    document.addEventListener('DOMContentLoaded', function() {
+      createFallingStars();
+      // Initialize language switcher
+      changeLanguage('en'); // Set default language
+      setTimeout(function() {
+        document.querySelector('.loader-container').style.display = 'none';
+        document.querySelector('.page-content').style.display = 'block';
+      }, 3000);
+    });
+  </script>
+</body>
 
 </html>
