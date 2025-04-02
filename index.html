@@ -1213,38 +1213,7 @@ input:checked + .slider:before {
 				document.getElementById('calculator-result').innerHTML = result;
 			}
 
-			// Function to save calculator log
-			async function saveCalculatorLog() {
-				const resultElement = document.getElementById('calculator-result');
-				if (!resultElement || !resultElement.innerHTML) {
-					alert('Please calculate the result first before saving.');
-					return;
-				}
-
-				const resultContent = resultElement.innerHTML;
-				const isFriheten = document.getElementById('couch-type-switch').checked;
-				const isProductionFlowView = document.getElementById('display-mode-switch').checked;
-				
-				const metadata = {
-					couchType: isFriheten ? 'Friheten' : 'Barslov',
-					viewMode: isProductionFlowView ? 'Production Flow' : 'Standard',
-					timestamp: new Date().toISOString()
-				};
-
-				try {
-					const response = await sendCalculatorLog(resultContent, metadata);
-					if (response) {
-						alert('Log saved successfully!');
-					} else {
-						alert('Failed to save log. Please try again.');
-					}
-				} catch (error) {
-					console.error('Error saving log:', error);
-					alert('Error saving log. Please check console for details.');
-				}
-			}
-
-			// Function to save calculator log
+	
 async function saveCalculatorLog() {
     const resultElement = document.getElementById('calculator-result');
     if (!resultElement || !resultElement.innerHTML) {
@@ -1279,65 +1248,47 @@ async function saveCalculatorLog() {
 // Function to send calculator log to Google Apps Script
 async function sendCalculatorLog(result, metadata = {}) {
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFn0BYbW1lKUPV4N-7lqn5Bdmz5ieJBcRPKSvaG2Tm5uD5PkgF81FZm1KXPjJCDgWg9g/exec';
-    
+
+    const payload = {
+        output: typeof result === 'string' ? result : JSON.stringify(result),
+        timestamp: new Date().toISOString(),
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        metadata: metadata
+    };
+
     try {
-        const payload = {
-            output: typeof result === 'string' ? result : JSON.stringify(result),
-            timestamp: new Date().toISOString(),
-            url: window.location.href,
-            userAgent: navigator.userAgent,
-            metadata: metadata
-        };
+        // First, check if the server supports CORS with an OPTIONS preflight request
+        const preflight = await fetch(SCRIPT_URL, {
+            method: 'OPTIONS',
+            mode: 'cors'
+        });
 
-        // First try with CORS headers
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (corsError) {
-            console.log('CORS request failed, trying with proxy');
-            // If CORS fails, try using a CORS proxy
-            return await sendViaProxy(SCRIPT_URL, payload);
+        if (!preflight.ok) {
+            throw new Error(`CORS preflight failed with status: ${preflight.status}`);
         }
+
+        // Send actual POST request if CORS is enabled
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'cors', // ✅ Explicitly enabling CORS
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return await response.json();
     } catch (error) {
         console.error('Failed to send log:', error);
         throw error;
     }
 }
 
-// Fallback function using a CORS proxy
-async function sendViaProxy(url, payload) {
-    const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'; // Public CORS proxy
-    try {
-        const response = await fetch(PROXY_URL + url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest' // Some proxies require this
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Proxy request failed with status ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Proxy request failed:', error);
-        throw error;
-    }
-}
 
 			// Update fillRandomValues function
 			function fillRandomValues() {
