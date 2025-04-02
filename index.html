@@ -1221,18 +1221,84 @@ async function saveCalculatorLog() {
         return;
     }
 
-    const resultContent = resultElement.innerHTML;
     const isFriheten = document.getElementById('couch-type-switch').checked;
     const isProductionFlowView = document.getElementById('display-mode-switch').checked;
     
+    // Gather all input values
+    const inputs = {};
+    
+    if (isFriheten) {
+        // Friheten inputs
+        inputs.dbLine1 = document.getElementById('friheten-db-line1').value;
+        inputs.palletsLine1 = document.getElementById('friheten-pallets-line1').value;
+        inputs.packagedLine1 = document.getElementById('friheten-packaged-line1').value;
+        inputs.upholsteredRabatabil = document.getElementById('friheten-upholstered-rabatabil').value;
+        inputs.upholsteredLada = document.getElementById('friheten-upholstered-lada').value;
+        inputs.upholsteredBratMic = document.getElementById('friheten-upholstered-brat-mic').value;
+        inputs.gluedRabatabil = document.getElementById('friheten-glued-rabatabil').value;
+        inputs.gluedBratMic = document.getElementById('friheten-glued-brat-mic').value;
+        inputs.assembledRabatabilLada = document.getElementById('friheten-assembled-rabatabil-lada').value;
+        
+        inputs.dbLine2 = document.getElementById('friheten-db-line2').value;
+        inputs.palletsLine2 = document.getElementById('friheten-pallets-line2').value;
+        inputs.packagedLine2 = document.getElementById('friheten-packaged-line2').value;
+        inputs.upholsteredSpatar = document.getElementById('friheten-upholstered-spatar').value;
+        inputs.upholsteredBratMare = document.getElementById('friheten-upholstered-brat-mare').value;
+        inputs.gluedSpatar = document.getElementById('friheten-glued-spatar').value;
+        inputs.gluedBratMare = document.getElementById('friheten-glued-brat-mare').value;
+        
+        inputs.dbLine3 = document.getElementById('friheten-db-line3').value;
+        inputs.palletsLine3 = document.getElementById('friheten-pallets-line3').value;
+        inputs.packagedLine3 = document.getElementById('friheten-packaged-line3').value;
+        inputs.upholsteredSezutFix = document.getElementById('friheten-upholstered-sezut-fix').value;
+        inputs.upholsteredSezutMobil = document.getElementById('friheten-upholstered-sezut-mobil').value;
+        inputs.upholsteredLadaMobila = document.getElementById('friheten-upholstered-lada-mobila').value;
+        inputs.gluedSezutFix = document.getElementById('friheten-glued-sezut-fix').value;
+        inputs.gluedSezutMobil = document.getElementById('friheten-glued-sezut-mobil').value;
+        inputs.assembledSezutLada = document.getElementById('friheten-assembled-sezut-lada').value;
+    } else {
+        // Barslov inputs
+        inputs.totalFromDatabase = document.getElementById('total-from-database').value;
+        inputs.completePallets = document.getElementById('complete-pallets').value;
+        
+        // Packet 1
+        inputs.individualPackagedPacket1 = document.getElementById('individual-packaged-packet1').value;
+        inputs.upholsteredRabatabil = document.getElementById('upholstered-rabatabil').value;
+        inputs.upholsteredLada = document.getElementById('upholstered-lada').value;
+        inputs.upholsteredBratStanga = document.getElementById('upholstered-brat-stanga').value;
+        inputs.gluedRabatabil = document.getElementById('glued-rabatabil').value;
+        inputs.gluedBratStanga = document.getElementById('glued-brat-stanga').value;
+        inputs.assembledRabatabilLada = document.getElementById('assembled-rabatabil-lada').value;
+        
+        // Packet 2
+        inputs.individualPackagedPacket2 = document.getElementById('individual-packaged-packet2').value;
+        inputs.upholsteredBratDreapta = document.getElementById('upholstered-brat-dreapta').value;
+        inputs.upholsteredSpatarMare = document.getElementById('upholstered-spatar-mare').value;
+        inputs.upholsteredSpatarMic = document.getElementById('upholstered-spatar-mic').value;
+        inputs.gluedBratDreapta = document.getElementById('glued-brat-dreapta').value;
+        inputs.gluedSpatarMare = document.getElementById('glued-spatar-mare').value;
+        inputs.gluedSpatarMic = document.getElementById('glued-spatar-mic').value;
+        
+        // Packet 3
+        inputs.individualPackagedPacket3 = document.getElementById('individual-packaged-packet3').value;
+        inputs.upholsteredSezutFix = document.getElementById('upholstered-sezut-fix').value;
+        inputs.upholsteredSezutMobil = document.getElementById('upholstered-sezut-mobil').value;
+        inputs.upholsteredLadaMobila = document.getElementById('upholstered-lada-mobila').value;
+        inputs.gluedSezutFix = document.getElementById('glued-sezut-fix').value;
+        inputs.gluedSezutMobil = document.getElementById('glued-sezut-mobil').value;
+        inputs.assembledSezutLada = document.getElementById('assembled-sezut-lada').value;
+    }
+
     const metadata = {
         couchType: isFriheten ? 'Friheten' : 'Barslov',
         viewMode: isProductionFlowView ? 'Production Flow' : 'Standard',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        inputs: inputs,
+        output: resultElement.innerHTML
     };
 
     try {
-        const response = await sendCalculatorLog(resultContent, metadata);
+        const response = await sendCalculatorLog(metadata);
         if (response && response.status === "success") {
             alert('Log saved successfully!');
         } else {
@@ -1245,16 +1311,8 @@ async function saveCalculatorLog() {
     }
 }
 
-async function sendCalculatorLog(result, metadata = {}) {
+async function sendCalculatorLog(data) {
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmm2Jo2QKYt2EynotvjiT1EAwJsX1rKl-PD91-QcLgKXKtSSygef3Mhc1NyR35xAlseA/exec';
-
-    const payload = {
-        output: typeof result === 'string' ? result : JSON.stringify(result),
-        timestamp: new Date().toISOString(),
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        metadata: metadata
-    };
 
     try {
         // Send the request with text/plain content type to avoid preflight
@@ -1262,9 +1320,9 @@ async function sendCalculatorLog(result, metadata = {}) {
             method: 'POST',
             mode: 'cors',
             headers: {
-                'Content-Type': 'text/plain' // Using text/plain instead of application/json
+                'Content-Type': 'text/plain'
             },
-            body: JSON.stringify(payload) // Still send JSON data, but as text/plain
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {
