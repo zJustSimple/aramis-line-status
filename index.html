@@ -1245,9 +1245,8 @@ async function saveCalculatorLog() {
     }
 }
 
-// Function to send calculator log to  Apps Script
 async function sendCalculatorLog(result, metadata = {}) {
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk39yl19js4lmFHl11F38e7o9ndF9YOikQ1yQ8GkzyjYWV8mVeT-JU7U2U0SNBc0FAmw/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmm2Jo2QKYt2EynotvjiT1EAwJsX1rKl-PD91-QcLgKXKtSSygef3Mhc1NyR35xAlseA/exec';
 
     const payload = {
         output: typeof result === 'string' ? result : JSON.stringify(result),
@@ -1258,24 +1257,14 @@ async function sendCalculatorLog(result, metadata = {}) {
     };
 
     try {
-        // First, check if the server supports CORS with an OPTIONS preflight request
-        const preflight = await fetch(SCRIPT_URL, {
-            method: 'OPTIONS',
-            mode: 'cors'
-        });
-
-        if (!preflight.ok) {
-            throw new Error(`CORS preflight failed with status: ${preflight.status}`);
-        }
-
-        // Send actual POST request if CORS is enabled
+        // Send the request with text/plain content type to avoid preflight
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'cors', // ✅ Explicitly enabling CORS
+            mode: 'cors',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'text/plain' // Using text/plain instead of application/json
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload) // Still send JSON data, but as text/plain
         });
 
         if (!response.ok) {
@@ -1288,8 +1277,6 @@ async function sendCalculatorLog(result, metadata = {}) {
         throw error;
     }
 }
-
-
 			// Update fillRandomValues function
 			function fillRandomValues() {
 				const randomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
