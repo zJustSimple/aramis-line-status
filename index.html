@@ -1247,7 +1247,7 @@ async function saveCalculatorLog() {
 
 // Function to send calculator log to Google Apps Script
 async function sendCalculatorLog(result, metadata = {}) {
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFn0BYbW1lKUPV4N-7lqn5Bdmz5ieJBcRPKSvaG2Tm5uD5PkgF81FZm1KXPjJCDgWg9g/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwn4zoXNo9VMoq12TZrvINPfb2kye0Jb1YL8hF-bQz-cEgZqSk5tQeOa9JGP_gDBi5ABw/exec';
 
     const payload = {
         output: typeof result === 'string' ? result : JSON.stringify(result),
