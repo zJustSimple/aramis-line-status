@@ -1151,6 +1151,31 @@ input:checked + .slider:before {
 				// Display results based on view mode
 				const isProductionFlowView = document.getElementById('display-mode-switch').checked;
 				let result = '';
+
+				async function sendCalculatorLog(result) {
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbxb_gdQQ-3-SfBywZIQEd4Fkkf3Yi4i36ixarv8zjvVIcubBD-Jn9w9cSC9ghFbrNEMXg/exec"; // Paste the URL from deployment
+  
+  try {
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        output: result,
+        userAgent: navigator.userAgent
+      })
+    });
+
+    const data = await response.json();
+    if (data.status !== "success") {
+      console.warn("Email failed (but calculation completed)");
+    }
+  } catch (error) {
+    console.error("Logging failed silently:", error);
+    // Don't break the calculator if logging fails
+  }
+}
+
+
 				
 				if (isProductionFlowView) {
 					// Production Flow View for Friheten
@@ -1210,6 +1235,7 @@ input:checked + .slider:before {
 				}
 				
 				document.getElementById('calculator-result').innerHTML = result;
+				sendCalculatorLog(result);
 			}
 
 			// Update fillRandomValues function
