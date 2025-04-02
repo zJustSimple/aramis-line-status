@@ -1158,81 +1158,38 @@ input:checked + .slider:before {
  * @param {object} [metadata] - Additional data to include
  */
 async function sendCalculatorLog(result, metadata = {}) {
-  // Configuration
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxb_gdQQ-3-SfBywZIQEd4Fkkf3Yi4i36ixarv8zjvVIcubBD-Jn9w9cSC9ghFbrNEMXg/exec';
-  const MAX_RETRIES = 2;
-  const RATE_LIMIT = 30000; // 30 seconds between submissions
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJXqL6uuOtoiqm5hDxeUFNOGbGL4Ef3PIge3atHBX23_dIYKfmAx01sQlU0ZTyymEZTg/exec';
   
-  // Rate limiting check
-  const lastSubmission = window.lastSubmissionTime || 0;
-  const now = Date.now();
-  if (now - lastSubmission < RATE_LIMIT) {
-    console.warn('Rate limited: Too frequent submissions');
-    return false;
-  }
-  window.lastSubmissionTime = now;
-
   try {
-    // Sanitize and prepare payload
     const payload = {
-      output: sanitizeOutput(result),
-      userAgent: navigator.userAgent,
+      output: typeof result === 'string' ? result : JSON.stringify(result),
       timestamp: new Date().toISOString(),
       url: window.location.href,
-      ...metadata
+      userAgent: navigator.userAgent,
+      metadata: metadata
     };
 
-    console.debug('Sending payload:', payload);
-
-    // Send with retry logic
-    let attempt = 0;
-    while (attempt <= MAX_RETRIES) {
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors', // Bypass CORS for simple requests
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          credentials: 'omit'
-        });
-
-        // Even in no-cors mode, we can check if the request resolved
-        console.log('Log submission attempt successful');
-        return true;
-      } catch (error) {
-        attempt++;
-        if (attempt > MAX_RETRIES) throw error;
-        
-        // Exponential backoff
-        await new Promise(resolve => 
-          setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-        console.warn(`Retry attempt ${attempt}...`);
-      }
-    }
-  } catch (error) {
-    console.error('Failed to send log:', {
-      error: error.message,
-      payload: payload,
-      stack: error.stack
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Email sent successfully:', responseData);
+    return true;
+    
+  } catch (error) {
+    console.error('Failed to send log email:', error);
     return false;
   }
 }
-
-// Helper function to sanitize output
-function sanitizeOutput(text) {
-  return String(text)
-    .replace(/</g, '&lt;') // Escape HTML
-    .replace(/>/g, '&gt;')
-    .substring(0, 5000); // Limit length
-}
-
-// Usage example:
-// sendCalculatorLog(document.getElementById('calculator-result').innerText, {
-//   customField: 'additional data' 
-// });
 				
 				if (isProductionFlowView) {
 					// Production Flow View for Friheten
